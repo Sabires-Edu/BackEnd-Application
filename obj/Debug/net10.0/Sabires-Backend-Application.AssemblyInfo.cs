@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("78807439-0390-4c8b-a6a5-903e16afabe6")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sabires-Backend-Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40a791447420f4adbaf354a281f36e7509dbee1f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sabires-Backend-Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sabires-Backend-Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

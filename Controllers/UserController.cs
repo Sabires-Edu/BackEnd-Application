@@ -1,13 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Sabires_Backend_Application.Services.Interface;
 
 namespace Sabires_Backend_Application.Controllers
 {
-    public class UserController : ControllerBase
+    [ApiController]
+    [Route("/v1/users/[controller]")]
+    public class UserController(IUserService userService) : ControllerBase
     {
-        [HttpGet("ping")]
-        public async Task<IActionResult> Ping()
+        public readonly IUserService _userService = userService;
+            
+        [HttpPost]
+        public async Task<IActionResult> CreateUser()
         {
-            return Ok("Pong");
+            var result = await _userService.CreateUser();
+
+            return Ok(result);
         }
 
     }
