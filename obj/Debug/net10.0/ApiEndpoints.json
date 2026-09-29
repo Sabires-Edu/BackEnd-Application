@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "CreateUser",
+    "RelativePath": "v1/users",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "Sabires_Backend_Application.Models.DTO.CreateUserDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

@@ -1,7 +1,9 @@
-﻿namespace Sabires_Backend_Application.Services.Interface
+﻿using Sabires_Backend_Application.Models.DTO;
+
+namespace Sabires_Backend_Application.Services.Interface
 {
     public interface IUserService
     {
-        public Task<string> CreateUser();
+        public Task<string> CreateUser(CreateUserDTO user);
     }
 }
