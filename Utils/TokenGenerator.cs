@@ -11,7 +11,7 @@ namespace Sabires_Backend_Application.Utils
 
         public string GenerateJwt(Guid UserId, string Email, string Role)
         {
-            var jwk = _config.GetSection("SupabaseJwt:PrivateJwk").Get<JwkOptions>();
+            var jwk = _config.GetSection("Supabase:PrivateJwk").Get<JwkOptions>();
 
             var parameters = new ECParameters
             {

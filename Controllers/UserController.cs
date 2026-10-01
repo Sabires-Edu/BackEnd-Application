@@ -13,7 +13,7 @@ namespace Sabires_Backend_Application.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO user)
-        {
+        {        
             var token = await _userService.CreateUser(user);
 
             return StatusCode(201, new SuccessResponse

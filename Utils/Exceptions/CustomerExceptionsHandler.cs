@@ -5,34 +5,36 @@ namespace Sabires_Backend_Application.Utils.Exceptions
 {
     public class CustomerExceptionsHandler : IExceptionHandler
     {
+        public static readonly Dictionary<Type, (int Status, string Message)> depara = new()
+        {
+            [typeof(BadRequestException)] = (400, "Houve um erro ao criar o usuário")
+        };
+
         public async ValueTask<bool> TryHandleAsync(
                 HttpContext httpContext,
                 Exception exception,
                 CancellationToken cancellationToken
             )
         {
-            var depara = new Dictionary<Type, (int Status, string Message)>
+            var entry = depara.FirstOrDefault(ex => ex.Key.IsInstanceOfType(exception));
+
+            if (entry.Key is null)
+                return false;
+
+            var (status, title) = entry.Value;
+
+            httpContext.Response.StatusCode = status;
+
+            ErrorResponse errorResponse = new()
             {
-                [typeof(BadRequestException)] = (400, "Houve um erro ao criar o usuário")
+                Success = false,
+                Title = title,
+                Detail = exception.Message,
+                Status = status
             };
 
-            if (depara.TryGetValue(exception.GetType(), out var value))
-            {
-                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-
-                ErrorResponse errorResponse = new()
-                {
-                    Success = false,
-                    Title = value.Message,
-                    Detail = exception.Message,
-                    Status = value.Status
-                };
-
-                await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
-                return true;
-            }
-
-            return false;
+            await httpContext.Response.WriteAsJsonAsync(errorResponse, cancellationToken);
+            return true;
         }
     }
 }

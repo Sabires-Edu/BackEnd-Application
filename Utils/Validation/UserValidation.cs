@@ -124,7 +124,7 @@ namespace Sabires_Backend_Application.Utils.Validation
 
         public static void ValidateStatus(int StatusId, int currentStatusId = -1)
         {
-            List<int> options = new List<int> { 0, 1, 2, 3, 4, 5, 6 };
+            List<int> options = new List<int> { 1, 2, 3, 4, 5, 6 };
 
             if (!options.Contains(StatusId))
                 throw new BadHttpRequestException("O status fornecido é inválido. Por favor insira um status válido.");
