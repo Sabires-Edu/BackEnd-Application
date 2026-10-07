@@ -1,5 +1,15 @@
 [
   {
+    "ContainingType": "Sabires_Backend_Application_Controllers.Health",
+    "Method": "Ping",
+    "RelativePath": "v1/ping",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "CreateUser",
     "RelativePath": "v1/users",

@@ -16,7 +16,6 @@ namespace Sabires_Backend_Application.Services
             if (string.IsNullOrEmpty(url))
                 throw new Exception("Supabase URL não configurada.");
 
-
             if (string.IsNullOrEmpty(key))
                 throw new Exception("Supabase Publishable Key não configurada.");
 

@@ -26,4 +26,5 @@ app.UseExceptionHandler();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run("http://0.0.0.0:5083");
+//app.Run("http://0.0.0.0:5083");
+app.Run();
