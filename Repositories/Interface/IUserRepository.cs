@@ -6,7 +6,7 @@ namespace Sabires_Backend_Application.Repositories.Interface
 {
     public interface IUserRepository
     {
-        public Task<Guid> CreateUser(User user);
+        public Task<Guid> CreateUser(UserStudent user);
 
         public Task<UserByEmailResponse> GetUserByEmail(string email);
     }

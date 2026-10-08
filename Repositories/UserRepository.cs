@@ -11,21 +11,26 @@ namespace Sabires_Backend_Application.Repositories
         public readonly Client client = Client.Client;
         public readonly Client adminClient = Client.AdminClient;
 
-        public async Task<Guid> CreateUser(User user)
+        public async Task<Guid> CreateUser(UserStudent user)
         {
-            Console.WriteLine(user.FirstName);
-            Console.WriteLine(user.LastName);
-            Console.WriteLine(user.Email);
+            Guid userid;
 
-            var response = await adminClient.From<User>().Insert(user, new Supabase.Postgrest.QueryOptions { Returning = Supabase.Postgrest.QueryOptions.ReturnType.Representation });
+            try
+            {
+                var response = await adminClient.Rpc("create_user_student", user);
+   
+                userid = Guid.Parse(response.Content ?? throw new Exception("Ocorreu um erro interno."));
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Ocorreu um erro.");
+            }
 
-            var createdUser = response.Models.First() ?? throw new Exception("Ocorreu algum erro na criação do usuário. Por favor tente novamente mais tarde.");
-
-            return createdUser.UserId;
+            return userid;
         }
 
         public async Task<UserByEmailResponse?> GetUserByEmail(string email)
-        {        
+        {
             if (client == null)
                 throw new Exception("Cliente é nulo.");
 

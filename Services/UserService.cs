@@ -21,7 +21,7 @@ namespace Sabires_Backend_Application.Services
 
             string HashedPassword = Hasher.HashPassword(null, userDTO.Password);
 
-            User user = new User
+            UserStudent user = new UserStudent
             {
                 FirstName = userDTO.FirstName,
                 LastName = userDTO.LastName,
@@ -30,7 +30,8 @@ namespace Sabires_Backend_Application.Services
                 RoleId = 1,
                 StatusId = userDTO.StatusId,
                 CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                UpdatedAt = DateTimeOffset.UtcNow,
+                BirthDate = userDTO.BirthDate
             };
 
             var UserId = await _userRepository.CreateUser(user);
