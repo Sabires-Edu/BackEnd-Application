@@ -9,7 +9,7 @@ namespace Sabires_Backend_Application.Utils.Validation
 {
     public class UserValidation
     {
-        public static readonly Regex NameRegex = new Regex(@"[^\p{L}\p{N} ]");
+        public static readonly Regex NameRegex = new Regex(@"[a-zA-Z]");
 
         public static readonly Regex EmailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
         private static readonly Regex SpecialCharRegex = new Regex(@"[^\p{L}\p{Nd}_]");
@@ -35,7 +35,7 @@ namespace Sabires_Backend_Application.Utils.Validation
             if (FirstName.Length < 2 || FirstName.Length > 50)
                 throw new BadRequestException("O primeiro nome deve ter entre 2 e 50 caracteres. Por favor insira um primeiro nome com um comprimento válido.");
 
-            if (NameRegex.IsMatch(FirstName))
+            if (!NameRegex.IsMatch(FirstName))
                 throw new BadRequestException("O primeiro nome contém caracteres inválidos. Por favor insira apenas letras.");
 
             if (FirstName == currentName)
@@ -50,7 +50,7 @@ namespace Sabires_Backend_Application.Utils.Validation
             if (LastName.Length < 2 || LastName.Length > 50)
                 throw new BadRequestException("O sobrenome deve ter entre 2 e 50 caracteres. Por favor insira um sobrenome com um comprimento válido.");
 
-            if (NameRegex.IsMatch(LastName))
+            if (!NameRegex.IsMatch(LastName))
                 throw new BadRequestException("O sobrenome contém caracteres inválidos. Por favor insira apenas letras.");
 
             if (LastName == currentName)

@@ -27,8 +27,18 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "Me",
+    "RelativePath": "v1/users/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "Login",
-    "RelativePath": "v1/users/login",
+    "RelativePath": "v1/users/me/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

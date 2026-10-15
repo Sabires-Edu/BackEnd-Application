@@ -61,5 +61,30 @@ namespace Sabires_Backend_Application.Repositories
 
             return new PrivateUserByEmailResponse { User = response.Models.First(), IsNull = false };
         }
+    
+        public async Task<MeResponse> Me(string token)
+        {
+            Client client = Client.InitCustomClient(token);
+
+            var response = await client.From<User>().Get();
+
+            if(response.Models.Count == 0)
+                throw new NotFoundException("Usuário não encontrado.");
+
+            var user = response.Models.First();
+
+            return new MeResponse
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                StatusId = user.StatusId,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt
+            };
+        }
     }
 }

@@ -24,6 +24,14 @@ namespace Sabires_Backend_Application.Models
         [Supabase.Postgrest.Attributes.Column("email")]
         public string Email { get; set; }
 
+        // Foto de perfil
+        [Supabase.Postgrest.Attributes.Column("profilepicture")]
+        public string ProfilePicture { get; set; }
+
+        // Biografia
+        [Supabase.Postgrest.Attributes.Column("biography")]
+        public string Biography { get; set; }
+
         // Senha
         [Supabase.Postgrest.Attributes.Column("password")]
         public string Password { get; set; }

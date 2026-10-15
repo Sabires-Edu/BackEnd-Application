@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualBasic;
 using Sabires_Backend_Application.Models;
 using Sabires_Backend_Application.Models.DTO;
+using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services.Interface;
 using Sabires_Backend_Application.Utils;
 using Sabires_Backend_Application.Utils.Exceptions;
 using Sabires_Backend_Application.Utils.Validation;
-using Supabase.Gotrue;
 
 namespace Sabires_Backend_Application.Services
 {
@@ -55,6 +54,11 @@ namespace Sabires_Backend_Application.Services
                 throw new UnauthorizedException("Email ou senha incorretos");
             
             return TokenGenerator.GenerateJwt(user.User.UserId, user.User.Email, "estudante"); ;
+        }
+    
+        public async Task<MeResponse> Me(string token)
+        {
+            return await _userRepository.Me(token);
         }
     }
 }

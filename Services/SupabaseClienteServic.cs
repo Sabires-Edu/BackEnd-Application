@@ -1,4 +1,5 @@
 ﻿using Supabase;
+using Microsoft.Extensions.Configuration;
 
 namespace Sabires_Backend_Application.Services
 {
@@ -6,6 +7,8 @@ namespace Sabires_Backend_Application.Services
     {
         public Client Client { get; }
         public Client AdminClient { get; }
+
+        public IConfiguration _configuration;
 
         public SupabaseClientService(IConfiguration Configuration)
         {
@@ -29,6 +32,31 @@ namespace Sabires_Backend_Application.Services
 
             Client = new Client(url, key, options);
             AdminClient = new Client(url, secretKey, options);
+
+            _configuration = Configuration;
+        }
+
+        public Client InitCustomClient(string token)
+        {
+            var url = _configuration["Supabase:Url"];
+            var key = _configuration["Supabase:PublishableKey"];
+
+            if (string.IsNullOrEmpty(url))
+                throw new Exception("Supabase URL não configurada.");
+
+            if (string.IsNullOrEmpty(key))
+                throw new Exception("Supabase Publishable Key não configurada.");
+
+            var options = new SupabaseOptions
+            {
+                AutoConnectRealtime = false,
+                Headers = new Dictionary<string, string>
+                {
+                    ["Authorization"] = $"Bearer {token}"
+                }
+            };
+
+            return new Client(url, key, options);
         }
     }
 }
