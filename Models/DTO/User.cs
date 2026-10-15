@@ -20,4 +20,13 @@
         // Status (Ensino Médio, Ensino Superior, Pós-Graduação, etc.)
         public required int StatusId { get; set; }     
     }
+
+    public class LoginUserDTO
+    {
+        // Email
+        public required string Email { get; set; }
+        
+        // Senha
+        public required string Password { get; set; }
+    }
 }

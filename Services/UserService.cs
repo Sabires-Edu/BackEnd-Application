@@ -5,7 +5,9 @@ using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services.Interface;
 using Sabires_Backend_Application.Utils;
+using Sabires_Backend_Application.Utils.Exceptions;
 using Sabires_Backend_Application.Utils.Validation;
+using Supabase.Gotrue;
 
 namespace Sabires_Backend_Application.Services
 {
@@ -20,13 +22,7 @@ namespace Sabires_Backend_Application.Services
         {
             UserValidation.ValidateUserInput(userDTO, _userRepository);
 
-            string HashedPassword = Hasher.HashPassword(null, userDTO.Password);
-
-            DateTime utcNow = DateTime.UtcNow;
-
-            TimeZoneInfo timezone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-
-            DateTimeOffset actualDate = TimeZoneInfo.ConvertTimeFromUtc(utcNow, timezone);
+            string HashedPassword = Hasher.HashPassword(null, userDTO.Password);                                
 
             UserStudent user = new UserStudent
             {
@@ -36,16 +32,29 @@ namespace Sabires_Backend_Application.Services
                 Password = HashedPassword,
                 RoleId = 1,
                 StatusId = userDTO.StatusId,
-                CreatedAt = actualDate,
-                UpdatedAt = actualDate,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 BirthDate = userDTO.BirthDate
             };
 
-            var UserId = await _userRepository.CreateUser(user);
+            var UserId = await _userRepository.CreateUser(user);            
 
-            var jwt = TokenGenerator.GenerateJwt(UserId, user.Email, "estudante");
+            return TokenGenerator.GenerateJwt(UserId, user.Email, "estudante");
+        }
 
-            return jwt;
+        public async Task<string> Login(LoginUserDTO userDTO)
+        {
+            var user = await _userRepository.GetPrivateUserByEmail(userDTO.Email);
+
+            if (user.IsNull)
+                throw new UnauthorizedException("Email ou senha incorretos");
+
+            var result = Hasher.VerifyHashedPassword(null, user.User.Password, userDTO.Password);
+
+            if(result == PasswordVerificationResult.Failed)
+                throw new UnauthorizedException("Email ou senha incorretos");
+            
+            return TokenGenerator.GenerateJwt(user.User.UserId, user.User.Email, "estudante"); ;
         }
     }
 }

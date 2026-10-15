@@ -48,5 +48,18 @@ namespace Sabires_Backend_Application.Repositories
 
             return new UserByEmailResponse { User = response.Models.First(), IsNull = false };
         }
+
+        public async Task<PrivateUserByEmailResponse?> GetPrivateUserByEmail(string email)
+        {
+            if (adminClient == null)
+                throw new Exception("Cliente é nulo.");
+
+            var response = await adminClient.From<User>().Where(user => user.Email == email).Get();
+
+            if (response.Models.Count == 0)
+                return new PrivateUserByEmailResponse { IsNull = true };
+
+            return new PrivateUserByEmailResponse { User = response.Models.First(), IsNull = false };
+        }
     }
 }

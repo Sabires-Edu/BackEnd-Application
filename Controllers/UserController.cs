@@ -10,18 +10,35 @@ namespace Sabires_Backend_Application.Controllers
     [Route("/v1/users")]
     public class UserController(IUserService userService) : ControllerBase
     {
-        public readonly IUserService _userService = userService;        
+        public readonly IUserService _userService = userService;
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO user)
-        {        
-            var token = await _userService.CreateUser(user);            
+        {
+            var token = await _userService.CreateUser(user);
 
             return StatusCode(201, new SuccessResponse
             {
                 Success = true,
                 Title = "Usuário criado corretamente.",
                 Status = 201,
+                Response = new Response
+                {
+                    JWT = token
+                }
+            });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO user)
+        {
+            var token = await _userService.Login(user);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Usuário logado corretamente.",
+                Status = 200,
                 Response = new Response
                 {
                     JWT = token

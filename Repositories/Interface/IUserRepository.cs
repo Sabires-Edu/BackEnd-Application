@@ -9,5 +9,7 @@ namespace Sabires_Backend_Application.Repositories.Interface
         public Task<Guid> CreateUser(UserStudent user);
 
         public Task<UserByEmailResponse> GetUserByEmail(string email);
+
+        public Task<PrivateUserByEmailResponse> GetPrivateUserByEmail(string email);
     }
 }

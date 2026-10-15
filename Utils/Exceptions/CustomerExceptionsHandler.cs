@@ -9,6 +9,7 @@ namespace Sabires_Backend_Application.Utils.Exceptions
         {
             { typeof(BadRequestException), (400, "Houve um erro ao realizar a requisição") },
             { typeof(InternalServerException), (500, "Houve um erro interno durante a requisição") },
+            { typeof(UnauthorizedException), (401, "Acesso não autorizado") },
         };
 
         public async ValueTask<bool> TryHandleAsync(

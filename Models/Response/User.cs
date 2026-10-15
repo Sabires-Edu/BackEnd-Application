@@ -62,4 +62,13 @@
         // Indica se o usuário é nulo
         public required bool IsNull { get; set; }
     }
+
+    public class PrivateUserByEmailResponse
+    {
+        // Informações do usuário
+        public User? User { get; set; }
+
+        // Indica se o usuário é nulo
+        public required bool IsNull { get; set; }
+    }
 }

@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.WebUtilities;
 namespace Sabires_Backend_Application.Utils
 {
     public class TokenGenerator(IConfiguration Configuration)
-    {        
+    {
         public string GenerateJwt(Guid UserId, string Email, string Role)
         {
             var jwkJson = Configuration["Supabase:PrivateJwk"];
 
-            if(string.IsNullOrEmpty(jwkJson))
+            if (string.IsNullOrEmpty(jwkJson))
                 throw new InternalServerException("Supabase Private JWK não configurada.");
 
             var jwk = JsonSerializer.Deserialize<JwkOptions>(jwkJson) ?? throw new InternalServerException("Não foi possível obter a chave JWK privada.");
@@ -37,7 +37,12 @@ namespace Sabires_Backend_Application.Utils
 
             var securityKey = new ECDsaSecurityKey(ecdsa)
             {
-                KeyId = jwk.Kid
+                KeyId = jwk.Kid,
+
+                CryptoProviderFactory = new CryptoProviderFactory
+                {
+                    CacheSignatureProviders = false
+                }
             };
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.EcdsaSha256);
@@ -55,6 +60,8 @@ namespace Sabires_Backend_Application.Utils
                 expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: credentials
             );
+
+            var handler = new JwtSecurityTokenHandler();
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
