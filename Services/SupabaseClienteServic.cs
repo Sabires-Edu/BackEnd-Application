@@ -2,12 +2,12 @@
 
 namespace Sabires_Backend_Application.Services
 {
-    public class SupabaseClienteService
+    public class SupabaseClientService
     {
         public Client Client { get; }
         public Client AdminClient { get; }
 
-        public SupabaseClienteService(IConfiguration Configuration)
+        public SupabaseClientService(IConfiguration Configuration)
         {
             var url = Configuration["Supabase:Url"];
             var key = Configuration["Supabase:PublishableKey"];

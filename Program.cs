@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<SupabaseClienteService>();
+builder.Services.AddSingleton<SupabaseClientService>();
 builder.Services.AddScoped<TokenGenerator>();
 
 builder.Services.AddScoped<IUserService, UserService>();

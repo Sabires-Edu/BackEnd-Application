@@ -1,17 +1,24 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Sabires_Backend_Application.Utils.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Sabires_Backend_Application.Utils
 {
-    public class TokenGenerator(IConfiguration config)
-    {
-        private readonly IConfiguration _config = config;
-
+    public class TokenGenerator(IConfiguration Configuration)
+    {        
         public string GenerateJwt(Guid UserId, string Email, string Role)
         {
-            var jwk = _config.GetSection("Supabase:PrivateJwk").Get<JwkOptions>();
+            var jwkJson = Configuration["Supabase:PrivateJwk"];
+
+            if(string.IsNullOrEmpty(jwkJson))
+                throw new InternalServerException("Supabase Private JWK não configurada.");
+
+            var jwk = JsonSerializer.Deserialize<JwkOptions>(jwkJson) ?? throw new InternalServerException("Não foi possível obter a chave JWK privada.");
 
             var parameters = new ECParameters
             {
@@ -19,11 +26,11 @@ namespace Sabires_Backend_Application.Utils
 
                 Q = new ECPoint
                 {
-                    X = Convert.FromBase64String(jwk.X),
-                    Y = Convert.FromBase64String(jwk.Y)
+                    X = WebEncoders.Base64UrlDecode(jwk.X),
+                    Y = WebEncoders.Base64UrlDecode(jwk.Y)
                 },
 
-                D = Convert.FromBase64String(jwk.D)
+                D = WebEncoders.Base64UrlDecode(jwk.D)
             };
 
             using var ecdsa = ECDsa.Create(parameters);
@@ -50,22 +57,27 @@ namespace Sabires_Backend_Application.Utils
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-
         }
-    }
-
-    public class SupabaseJwtOptions
-    {
-        public JwkOptions PrvivateJwk { get; set; } = new();
     }
 
     public class JwkOptions
     {
+        [JsonPropertyName("kty")]
         public string Kty { get; set; } = string.Empty;
+
+        [JsonPropertyName("kid")]
         public string Kid { get; set; } = string.Empty;
+
+        [JsonPropertyName("crv")]
         public string Crv { get; set; } = string.Empty;
+
+        [JsonPropertyName("x")]
         public string X { get; set; } = string.Empty;
+
+        [JsonPropertyName("y")]
         public string Y { get; set; } = string.Empty;
+
+        [JsonPropertyName("d")]
         public string D { get; set; } = string.Empty;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace Sabires_Backend_Application.Models.Response
 {
@@ -20,15 +21,19 @@ namespace Sabires_Backend_Application.Models.Response
     public class Response
     {
         // Token de autenticação
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]        
         public string? JWT { get; set; }
 
         // Informações do usuário logado
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public MeResponse? Me { get; set; }
 
         // Informações de usuário específico
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public UserResponse? User { get; set; }
 
         // Lista de usuários
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<UserResponse>? Users { get; set; }
     }
 }

@@ -4,10 +4,10 @@ namespace Sabires_Backend_Application.Models
 {
     public class UserStudent
     {
-        [JsonPropertyName("user_firstName")]
+        [JsonPropertyName("user_firstname")]
         public required string FirstName { get; set; }
 
-        [JsonPropertyName("user_lastName")]
+        [JsonPropertyName("user_lastname")]
         public required string LastName { get; set; }
 
         [JsonPropertyName("user_email")]

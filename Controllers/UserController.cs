@@ -2,6 +2,7 @@
 using Sabires_Backend_Application.Services.Interface;
 using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
+using Sabires_Backend_Application.Utils;
 
 namespace Sabires_Backend_Application.Controllers
 {
@@ -9,12 +10,12 @@ namespace Sabires_Backend_Application.Controllers
     [Route("/v1/users")]
     public class UserController(IUserService userService) : ControllerBase
     {
-        public readonly IUserService _userService = userService;
+        public readonly IUserService _userService = userService;        
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO user)
         {        
-            var token = await _userService.CreateUser(user);
+            var token = await _userService.CreateUser(user);            
 
             return StatusCode(201, new SuccessResponse
             {

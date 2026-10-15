@@ -1,12 +1,16 @@
-﻿using Sabires_Backend_Application.Models;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.IdentityModel.Tokens;
+using Sabires_Backend_Application.Models;
 using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services;
+using Sabires_Backend_Application.Utils.Exceptions;
 using Supabase;
+using System.Text.Json;
 
 namespace Sabires_Backend_Application.Repositories
 {
-    public class UserRepository(SupabaseClienteService Client) : IUserRepository
+    public class UserRepository(SupabaseClientService Client) : IUserRepository
     {
         public readonly Client client = Client.Client;
         public readonly Client adminClient = Client.AdminClient;
@@ -18,12 +22,15 @@ namespace Sabires_Backend_Application.Repositories
             try
             {
                 var response = await adminClient.Rpc("create_user_student", user);
-   
-                userid = Guid.Parse(response.Content ?? throw new Exception("Ocorreu um erro interno."));
+
+                if (response.Content.IsNullOrEmpty())
+                    throw new Exception();                
+
+                userid = JsonSerializer.Deserialize<Guid>(response.Content);
             }
             catch (Exception e)
             {
-                throw new Exception("Ocorreu um erro.");
+                throw new InternalServerException("Não foi possível criar o novo usuário. Por favor, tente novamente mais tarde.");
             }
 
             return userid;

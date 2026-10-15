@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualBasic;
 using Sabires_Backend_Application.Models;
 using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Repositories.Interface;
@@ -21,6 +22,12 @@ namespace Sabires_Backend_Application.Services
 
             string HashedPassword = Hasher.HashPassword(null, userDTO.Password);
 
+            DateTime utcNow = DateTime.UtcNow;
+
+            TimeZoneInfo timezone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+
+            DateTimeOffset actualDate = TimeZoneInfo.ConvertTimeFromUtc(utcNow, timezone);
+
             UserStudent user = new UserStudent
             {
                 FirstName = userDTO.FirstName,
@@ -29,8 +36,8 @@ namespace Sabires_Backend_Application.Services
                 Password = HashedPassword,
                 RoleId = 1,
                 StatusId = userDTO.StatusId,
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow,
+                CreatedAt = actualDate,
+                UpdatedAt = actualDate,
                 BirthDate = userDTO.BirthDate
             };
 

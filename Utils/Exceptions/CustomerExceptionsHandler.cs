@@ -5,9 +5,10 @@ namespace Sabires_Backend_Application.Utils.Exceptions
 {
     public class CustomerExceptionsHandler : IExceptionHandler
     {
-        public static readonly Dictionary<Type, (int Status, string Message)> depara = new()
+        public static readonly Dictionary<Type, (int Status, string Message)> depara = new()        
         {
-            [typeof(BadRequestException)] = (400, "Houve um erro ao criar o usuário")
+            { typeof(BadRequestException), (400, "Houve um erro ao realizar a requisição") },
+            { typeof(InternalServerException), (500, "Houve um erro interno durante a requisição") },
         };
 
         public async ValueTask<bool> TryHandleAsync(
