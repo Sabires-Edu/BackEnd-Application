@@ -4,14 +4,16 @@ using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Utils.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Sabires_Backend_Application.Utils.Token;
 
 namespace Sabires_Backend_Application.Controllers
 {
     [ApiController]
     [Route("/v1/users")]
-    public class UserController(IUserService userService) : ControllerBase
+    public class UserController(IUserService userService, TokenGenerator tokenGenerator) : ControllerBase
     {
         public readonly IUserService _userService = userService;
+        public readonly TokenGenerator _tokenGenerator = tokenGenerator;
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO user)
@@ -51,12 +53,7 @@ namespace Sabires_Backend_Application.Controllers
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
-            string auth = Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(auth) || !auth.StartsWith("Bearer "))
-                throw new UnauthorizedException("Token de autenticação ausente ou inválido.");
-
-            string token = auth.Replace("Bearer ", "");
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
             var user = await _userService.Me(token);
 
@@ -72,23 +69,58 @@ namespace Sabires_Backend_Application.Controllers
             });
         }
 
-        //[HttpGet("{userid}")]
-        //public async Task<IActionResult> GetUserById([FromRoute] string userid)
-        //{
-        //    if 
+        [Authorize]
+        [HttpGet("{userid}")]
+        public async Task<IActionResult> GetUserById([FromRoute] string userid)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
-        //    var user = await _userService.GetUserById(userid);
+            var user = await _userService.GetUserById(userid, token);
 
-        //    return StatusCode(200, new SuccessResponse
-        //    {
-        //        Success = true,
-        //        Title = "Informações do usuário retornadas corretamente.",
-        //        Status = 200,
-        //        Response = new Response
-        //        {
-        //            User = user
-        //        }
-        //    });
-        //}
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Informações do usuário retornadas corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    User = user
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers([FromQuery] int page = 1, int limit = 10)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if(limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de usuários por página.");
+
+            var users = await _userService.GetAllUsers(page, limit, token);
+            var total = await _userService.GetTotalUsers(token);
+            
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Lista de usuários retornada corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Users = users,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                },
+            });
+        }
     }
 }

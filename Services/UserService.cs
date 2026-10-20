@@ -60,5 +60,19 @@ namespace Sabires_Backend_Application.Services
         {
             return await _userRepository.Me(token);
         }
+
+        public async Task<UserResponse> GetUserById(string userid, string token) {
+            return await _userRepository.GetUserById(userid, token);
+        }
+    
+        public async Task<List<UserResponse>> GetAllUsers(int page, int limit, string token)
+        {
+            return await _userRepository.GetAllUsers(page, limit, token);
+        }
+
+        public async Task<int> GetTotalUsers(string token)
+        {
+            return await _userRepository.GetTotalUsers(token);
+        }
     }
 }

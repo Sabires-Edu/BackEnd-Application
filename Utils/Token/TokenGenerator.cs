@@ -87,6 +87,13 @@ namespace Sabires_Backend_Application.Utils.Token
 
             return ECDsa.Create(parameters);
         }
+    
+        public string CheckToken(string auth) {
+            if (string.IsNullOrEmpty(auth) || !auth.StartsWith("Bearer "))
+                throw new UnauthorizedException("Token de autenticação ausente ou inválido.");
+
+            return auth.Replace("Bearer ", "");
+        }
     }
 
     public class JwkOptions

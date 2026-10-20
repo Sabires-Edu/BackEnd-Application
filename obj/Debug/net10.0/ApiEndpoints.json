@@ -27,6 +27,43 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "GetAllUsers",
+    "RelativePath": "v1/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "GetUserById",
+    "RelativePath": "v1/users/{userid}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userid",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "Me",
     "RelativePath": "v1/users/me",
     "HttpMethod": "GET",

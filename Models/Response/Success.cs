@@ -35,5 +35,17 @@ namespace Sabires_Backend_Application.Models.Response
         // Lista de usuários
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<UserResponse>? Users { get; set; }
+
+        // Informações de paginação
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public PaginationResponse? Pagination { get; set; }
+    }
+
+    public class PaginationResponse
+    {
+        public int Page { get; set; }
+        public int Limit { get; set; }
+        public int Total_Elements { get; set; }
+        public int Total_Pages { get; set; }
     }
 }

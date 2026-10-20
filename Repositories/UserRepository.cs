@@ -6,7 +6,9 @@ using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services;
 using Sabires_Backend_Application.Utils.Exceptions;
 using Supabase;
+using System.Net.NetworkInformation;
 using System.Text.Json;
+using static Supabase.Postgrest.Constants;
 
 namespace Sabires_Backend_Application.Repositories
 {
@@ -85,6 +87,66 @@ namespace Sabires_Backend_Application.Repositories
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt
             };
+        }
+    
+        public async Task<UserResponse> GetUserById(string userid, string token)
+        {
+            Client client = Client.InitCustomClient(token);
+
+            PublicUser user = new PublicUser();
+
+            try
+            {
+                var response = await client.From<PublicUser>().Where(user => user.UserId == Guid.Parse(userid)).Get();
+
+                if (response.Models.Count == 0)
+                    throw new NotFoundException("Usuário não encontrado.");
+
+                user = response.Models.FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                throw new NotFoundException("Usuário não encontrado. Por favor, selecione um usuário válido.");
+            }
+
+            return new UserResponse {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                StatusId = user.StatusId
+            };
+        }
+    
+        public async Task<List<UserResponse>> GetAllUsers(int page, int limit, string token)
+        {
+            Client client = Client.InitCustomClient(token);
+
+            int inicio = (page - 1) * limit;
+            int fim = inicio + limit - 1;
+
+            var response = await client.From<PublicUser>().Range(inicio, fim).Get();
+
+            return response.Models.Select(user => new UserResponse {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                StatusId = user.StatusId
+            }).ToList();
+        }
+    
+        public async Task<int> GetTotalUsers(string token)
+        {
+            Client client = Client.InitCustomClient(token);
+
+            var total = await client.From<PublicUser>().Count(CountType.Exact);            
+
+            return total;
         }
     }
 }
