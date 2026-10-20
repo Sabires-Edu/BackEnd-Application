@@ -3,6 +3,7 @@ using Sabires_Backend_Application.Services.Interface;
 using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Utils.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sabires_Backend_Application.Controllers
 {
@@ -46,6 +47,7 @@ namespace Sabires_Backend_Application.Controllers
             });
         }
 
+        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
@@ -69,5 +71,24 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+        //[HttpGet("{userid}")]
+        //public async Task<IActionResult> GetUserById([FromRoute] string userid)
+        //{
+        //    if 
+
+        //    var user = await _userService.GetUserById(userid);
+
+        //    return StatusCode(200, new SuccessResponse
+        //    {
+        //        Success = true,
+        //        Title = "Informações do usuário retornadas corretamente.",
+        //        Status = 200,
+        //        Response = new Response
+        //        {
+        //            User = user
+        //        }
+        //    });
+        //}
     }
 }

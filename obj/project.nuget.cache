@@ -1,15 +1,19 @@
 {
   "version": 2,
-  "dgSpecHash": "bif9deDMo7o=",
+  "dgSpecHash": "Bn+EVa0CnMc=",
   "success": true,
   "projectFilePath": "C:\\Users\\andjes\\Desktop\\Pessoal\\BackEnd-Application\\Sabires-Backend-Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\andjes\\.nuget\\packages\\birdmessenger\\4.0.0\\birdmessenger.4.0.0.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.13\\microsoft.aspnetcore.authentication.jwtbearer.10.0.13.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.12\\microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
-    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.abstractions\\7.5.1\\microsoft.identitymodel.abstractions.7.5.1.nupkg.sha512",
-    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\7.5.1\\microsoft.identitymodel.jsonwebtokens.7.5.1.nupkg.sha512",
-    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.logging\\7.5.1\\microsoft.identitymodel.logging.7.5.1.nupkg.sha512",
-    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.tokens\\7.5.1\\microsoft.identitymodel.tokens.7.5.1.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.bcl.cryptography\\10.0.2\\microsoft.bcl.cryptography.10.0.2.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.19.2\\microsoft.identitymodel.abstractions.8.19.2.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.19.2\\microsoft.identitymodel.jsonwebtokens.8.19.2.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.logging\\8.19.2\\microsoft.identitymodel.logging.8.19.2.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.protocols\\8.19.2\\microsoft.identitymodel.protocols.8.19.2.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\8.19.2\\microsoft.identitymodel.protocols.openidconnect.8.19.2.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.19.2\\microsoft.identitymodel.tokens.8.19.2.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\microsoft.io.recyclablememorystream\\3.0.1\\microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\microsoft.openapi\\2.12.0\\microsoft.openapi.2.12.0.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\mimemapping\\4.0.0\\mimemapping.4.0.0.nupkg.sha512",
@@ -20,28 +24,9 @@
     "C:\\Users\\andjes\\.nuget\\packages\\supabase.postgrest\\8.1.1\\supabase.postgrest.8.1.1.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\supabase.realtime\\8.1.1\\supabase.realtime.8.1.1.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\supabase.storage\\8.1.1\\supabase.storage.8.1.1.nupkg.sha512",
-    "C:\\Users\\andjes\\.nuget\\packages\\system.identitymodel.tokens.jwt\\7.5.1\\system.identitymodel.tokens.jwt.7.5.1.nupkg.sha512",
+    "C:\\Users\\andjes\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.19.2\\system.identitymodel.tokens.jwt.8.19.2.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\system.reactive\\6.1.0\\system.reactive.6.1.0.nupkg.sha512",
     "C:\\Users\\andjes\\.nuget\\packages\\websocket.client\\5.5.0\\websocket.client.5.5.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "message": "Ocorreu um erro ao obter os dados de vulnerabilidade do pacote: Não é possível carregar o índice de serviço para a origem https://api.nuget.org/v3/index.json.",
-      "projectPath": "C:\\Users\\andjes\\Desktop\\Pessoal\\BackEnd-Application\\Sabires-Backend-Application.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\andjes\\Desktop\\Pessoal\\BackEnd-Application\\Sabires-Backend-Application.csproj",
-      "targetGraphs": []
-    },
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "message": "Ocorreu um erro ao obter os dados de vulnerabilidade do pacote: Não é possível carregar o índice de serviço para a origem https://nuget.pkg.github.com/OlosCustom/index.json.",
-      "projectPath": "C:\\Users\\andjes\\Desktop\\Pessoal\\BackEnd-Application\\Sabires-Backend-Application.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\andjes\\Desktop\\Pessoal\\BackEnd-Application\\Sabires-Backend-Application.csproj",
-      "targetGraphs": []
-    }
-  ]
+  "logs": []
 }

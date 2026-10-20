@@ -7,33 +7,29 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Sabires_Backend_Application.Utils
+namespace Sabires_Backend_Application.Utils.Token
 {
-    public class TokenGenerator(IConfiguration Configuration)
+    public class TokenGenerator
     {
-        public string GenerateJwt(Guid UserId, string Email, string Role)
+        
+        public readonly JwkOptions jwk;
+        private readonly IConfiguration _Configuration;
+
+        public TokenGenerator(IConfiguration Configuration)
         {
+            _Configuration = Configuration;
+
             var jwkJson = Configuration["Supabase:PrivateJwk"];
 
             if (string.IsNullOrEmpty(jwkJson))
                 throw new InternalServerException("Supabase Private JWK não configurada.");
 
-            var jwk = JsonSerializer.Deserialize<JwkOptions>(jwkJson) ?? throw new InternalServerException("Não foi possível obter a chave JWK privada.");
+            jwk = JsonSerializer.Deserialize<JwkOptions>(jwkJson) ?? throw new InternalServerException("Não foi possível obter a chave JWK privada.");
+        }
 
-            var parameters = new ECParameters
-            {
-                Curve = ECCurve.NamedCurves.nistP256,
-
-                Q = new ECPoint
-                {
-                    X = WebEncoders.Base64UrlDecode(jwk.X),
-                    Y = WebEncoders.Base64UrlDecode(jwk.Y)
-                },
-
-                D = WebEncoders.Base64UrlDecode(jwk.D)
-            };
-
-            using var ecdsa = ECDsa.Create(parameters);
+        public string GenerateJwt(Guid UserId, string Email, string Role)
+        {
+            using ECDsa ecdsa = CreateECDsa();
 
             var securityKey = new ECDsaSecurityKey(ecdsa)
             {
@@ -47,12 +43,20 @@ namespace Sabires_Backend_Application.Utils
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.EcdsaSha256);
 
+            if(string.IsNullOrEmpty(_Configuration["Jwt:Issuer"]))
+                throw new InternalServerException("JWT Issuer não configurado.");
+
+            if(string.IsNullOrEmpty(_Configuration["Jwt:Audience"]))
+                throw new InternalServerException("JWT Audience não configurado.");
+
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Sub, UserId.ToString()),
                 new(JwtRegisteredClaimNames.Email, Email),
                 new("role", "authenticated"),
-                new("user_role", Role)
+                new("user_role", Role),
+                new(JwtRegisteredClaimNames.Iss, _Configuration["Jwt:Issuer"]),
+                new(JwtRegisteredClaimNames.Aud, _Configuration["Jwt:Audience"])
             };
 
             var token = new JwtSecurityToken(
@@ -64,6 +68,24 @@ namespace Sabires_Backend_Application.Utils
             var handler = new JwtSecurityTokenHandler();
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    
+        public ECDsa CreateECDsa()
+        {
+            var parameters = new ECParameters
+            {
+                Curve = ECCurve.NamedCurves.nistP256,
+
+                Q = new ECPoint
+                {
+                    X = WebEncoders.Base64UrlDecode(jwk.X),
+                    Y = WebEncoders.Base64UrlDecode(jwk.Y)
+                },
+
+                D = WebEncoders.Base64UrlDecode(jwk.D)
+            };            
+
+            return ECDsa.Create(parameters);
         }
     }
 

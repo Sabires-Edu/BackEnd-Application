@@ -29,7 +29,7 @@ namespace Sabires_Backend_Application.Utils.Validation
 
         public static void ValidateFirstName(string FirstName, string currentName = "")
         {
-            if (FirstName.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(FirstName))
                 throw new BadRequestException("O primeiro nome não pode ser vazio. Por favor insira um primeiro nome válido.");
 
             if (FirstName.Length < 2 || FirstName.Length > 50)
@@ -44,7 +44,7 @@ namespace Sabires_Backend_Application.Utils.Validation
 
         public static void ValidateLastName(string LastName, string currentName = "")
         {
-            if (LastName.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(LastName))
                 throw new BadRequestException("O sobrenome não pode ser vazio. Por favor insira um sobrenome válido.");
 
             if (LastName.Length < 2 || LastName.Length > 50)
@@ -59,7 +59,7 @@ namespace Sabires_Backend_Application.Utils.Validation
 
         public static void ValidateEmail(IUserRepository repository, string Email, string currentEmail = "")
         {
-            if (Email.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(Email))
                 throw new BadRequestException("O email não pode ser vazio. Por favor insira um email válido.");
 
             if (!EmailRegex.IsMatch(Email))
@@ -79,7 +79,7 @@ namespace Sabires_Backend_Application.Utils.Validation
             if (Password == currentPassword)
                 throw new BadRequestException("A nova senha não pode ser igual à senha atual. Por favor altere para uma senha diferente.");
 
-            if (Password.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(Password))
                 throw new BadRequestException("A senha não pode ser vazia. Por favor insira uma senha válida.");
 
             if (Password.Length < 8)

@@ -23,8 +23,8 @@ namespace Sabires_Backend_Application.Repositories
             {
                 var response = await adminClient.Rpc("create_user_student", user);
 
-                if (response.Content.IsNullOrEmpty())
-                    throw new Exception();                
+                if (string.IsNullOrEmpty(response.Content))
+                    throw new InternalServerException("Não foi possível criar o novo usuário. Por favor, tente novamente mais tarde.");                
 
                 userid = JsonSerializer.Deserialize<Guid>(response.Content);
             }

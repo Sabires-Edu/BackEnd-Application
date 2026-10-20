@@ -153,3 +153,7 @@ C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\refint\Sab
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\Sabires-Backend-Application.pdb
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\Sabires-Backend-Application.genruntimeconfig.cache
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\ref\Sabires-Backend-Application.dll
+C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
+C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll

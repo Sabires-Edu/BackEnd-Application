@@ -4,8 +4,8 @@ using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services.Interface;
-using Sabires_Backend_Application.Utils;
 using Sabires_Backend_Application.Utils.Exceptions;
+using Sabires_Backend_Application.Utils.Token;
 using Sabires_Backend_Application.Utils.Validation;
 
 namespace Sabires_Backend_Application.Services
