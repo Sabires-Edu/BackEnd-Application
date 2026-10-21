@@ -10,7 +10,7 @@ namespace Sabires_Backend_Application.Services.Interface
         public Task<string> Login(LoginUserDTO user);
         public Task<MeResponse> Me(string token);
         public Task<UserResponse> GetUserById(string userid, string token);
-        public Task<List<UserResponse>> GetAllUsers(int page, int limit, string token);
+        public Task<List<UserResponse>> GetAllUsers(int page, int limit, string token, Guid userid);
         public Task<int> GetTotalUsers(string token);
     }
 }

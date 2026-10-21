@@ -64,6 +64,16 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "DebugAuth",
+    "RelativePath": "v1/users/debug-auth",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "Me",
     "RelativePath": "v1/users/me",
     "HttpMethod": "GET",

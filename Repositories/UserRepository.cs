@@ -120,14 +120,14 @@ namespace Sabires_Backend_Application.Repositories
             };
         }
     
-        public async Task<List<UserResponse>> GetAllUsers(int page, int limit, string token)
+        public async Task<List<UserResponse>> GetAllUsers(int page, int limit, string token, Guid userid)
         {
             Client client = Client.InitCustomClient(token);
 
             int inicio = (page - 1) * limit;
             int fim = inicio + limit - 1;
 
-            var response = await client.From<PublicUser>().Range(inicio, fim).Get();
+            var response = await client.From<PublicUser>().Range(inicio, fim).Where(user => user.UserId != userid).Get();
 
             return response.Models.Select(user => new UserResponse {
                 UserId = user.UserId,

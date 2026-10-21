@@ -5,6 +5,7 @@ using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Utils.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Sabires_Backend_Application.Utils.Token;
+using System.Security.Claims;
 
 namespace Sabires_Backend_Application.Controllers
 {
@@ -93,15 +94,20 @@ namespace Sabires_Backend_Application.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] int page = 1, int limit = 10)
         {
-            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
-
             if (page < 1)
                 throw new BadRequestException("Insira uma página válida.");
 
             if(limit < 1)
                 throw new BadRequestException("Insira uma quantidade válida de usuários por página.");
 
-            var users = await _userService.GetAllUsers(page, limit, token);
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor faça login e tente novamente.");
+
+            var users = await _userService.GetAllUsers(page, limit, token, userid);
             var total = await _userService.GetTotalUsers(token);
             
             return StatusCode(200, new SuccessResponse
@@ -116,10 +122,26 @@ namespace Sabires_Backend_Application.Controllers
                     {
                         Page = page,
                         Limit = limit,
-                        Total_Elements = total,
+                        Total_Elements = total - 1,
                         Total_Pages = (int)Math.Ceiling((double)total / limit)
                     }
                 },
+            });
+        }
+
+        [HttpGet("debug-auth")]
+        public IActionResult DebugAuth()
+        {
+            return Ok(new
+            {
+                IsAuthenticated = User.Identity?.IsAuthenticated,
+                AuthenticationType = User.Identity?.AuthenticationType,
+                ClaimCount = User.Claims.Count(),
+                Claims = User.Claims.Select(c => new
+                {
+                    c.Type,
+                    c.Value
+                }).ToList()
             });
         }
     }
