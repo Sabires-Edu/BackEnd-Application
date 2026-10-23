@@ -99,7 +99,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://127.0.0.1:5173",
-                "http://0.0.0.0:5173",
+                "http://0.0.0.0:5173"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
