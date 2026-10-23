@@ -96,6 +96,8 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAll");
+
 app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
