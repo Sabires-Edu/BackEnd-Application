@@ -97,7 +97,7 @@ namespace Sabires_Backend_Application.Controllers
             if (page < 1)
                 throw new BadRequestException("Insira uma página válida.");
 
-            if(limit < 1)
+            if (limit < 1)
                 throw new BadRequestException("Insira uma quantidade válida de usuários por página.");
 
             string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
@@ -109,7 +109,7 @@ namespace Sabires_Backend_Application.Controllers
 
             var users = await _userService.GetAllUsers(page, limit, token, userid);
             var total = await _userService.GetTotalUsers(token);
-            
+
             return StatusCode(200, new SuccessResponse
             {
                 Success = true,
@@ -129,19 +129,81 @@ namespace Sabires_Backend_Application.Controllers
             });
         }
 
-        [HttpGet("debug-auth")]
-        public IActionResult DebugAuth()
+        [Authorize]
+        [HttpGet("me/followers")]
+        public async Task<IActionResult> GetFollowers([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            return Ok(new
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de usuários por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor faça login e tente novamente.");
+
+            var followers = await _userService.GetFollowers(page, limit, token, userid);
+            var total = await _userService.GetTotalFollowerUsers(token, userid, "follower");
+
+            return StatusCode(200, new SuccessResponse
             {
-                IsAuthenticated = User.Identity?.IsAuthenticated,
-                AuthenticationType = User.Identity?.AuthenticationType,
-                ClaimCount = User.Claims.Count(),
-                Claims = User.Claims.Select(c => new
+                Success = true,
+                Title = "Lista de seguidores retornada corretamente.",
+                Status = 200,
+                Response = new Response
                 {
-                    c.Type,
-                    c.Value
-                }).ToList()
+                    Users = followers,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                },
+            });
+        }
+
+        [Authorize]
+        [HttpGet("me/followings")]
+        public async Task<IActionResult> GetFollowings([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        {
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de usuários por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor faça login e tente novamente.");
+
+            var followings = await _userService.GetFollowings(page, limit, token, userid);
+            var total = await _userService.GetTotalFollowerUsers(token, userid, "following");
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Lista de seguidores retornada corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Users = followings,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                },
             });
         }
     }

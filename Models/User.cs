@@ -83,4 +83,26 @@ namespace Sabires_Backend_Application.Models
         [Supabase.Postgrest.Attributes.Column("statusid")]
         public int StatusId { get; set; }
     }
+
+    [Supabase.Postgrest.Attributes.Table("followers")]
+    public class Follower : BaseModel
+    {
+        [Supabase.Postgrest.Attributes.Column("followersid")]
+        public int FollowersId { get; set; }
+        
+        [Supabase.Postgrest.Attributes.Column("followeruserid")]
+        public Guid FollowerUserId { get; set; }
+
+        [Reference(typeof(PublicUser))]
+        public PublicUser FollowerUser { get; set; }
+        
+        [Supabase.Postgrest.Attributes.Column("followinguserid")]
+        public Guid FollowingUserId { get; set; }
+
+        [Reference(typeof(PublicUser))]
+        public PublicUser FollowingUser { get; set; }
+
+        [Supabase.Postgrest.Attributes.Column("statusid")]
+        public int StatusId { get; set; }
+    }
 }

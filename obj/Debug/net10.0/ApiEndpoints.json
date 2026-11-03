@@ -64,8 +64,8 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
-    "Method": "DebugAuth",
-    "RelativePath": "v1/users/debug-auth",
+    "Method": "Me",
+    "RelativePath": "v1/users/me",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -74,12 +74,44 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
-    "Method": "Me",
-    "RelativePath": "v1/users/me",
+    "Method": "GetFollowers",
+    "RelativePath": "v1/users/me/followers",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "GetFollowings",
+    "RelativePath": "v1/users/me/followings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

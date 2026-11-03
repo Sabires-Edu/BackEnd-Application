@@ -1,4 +1,6 @@
-﻿namespace Sabires_Backend_Application.Models.Response
+﻿using System.Text.Json.Serialization;
+
+namespace Sabires_Backend_Application.Models.Response
 {
     public class MeResponse
     {
@@ -28,6 +30,12 @@
 
         // Data de atualização
         public required DateTimeOffset UpdatedAt { get; set; }
+
+        // Total de seguidores
+        public required int TotalFollowers { get; set; }
+
+        // Total de usuários que o usuário está seguindo
+        public required int TotalFollowing { get; set; }
     }
 
     public class UserResponse
@@ -52,6 +60,14 @@
 
         // Status (Ensino Médio, Ensino Superior, Pós-Graduação, etc.)
         public required int StatusId { get; set; }
+
+        // Total de seguidores
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public int TotalFollowers { get; set; }
+
+        // Total de usuários que o usuário está seguindo
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public int TotalFollowing { get; set; }
     }
 
     public class UserByEmailResponse

@@ -12,5 +12,8 @@ namespace Sabires_Backend_Application.Services.Interface
         public Task<UserResponse> GetUserById(string userid, string token);
         public Task<List<UserResponse>> GetAllUsers(int page, int limit, string token, Guid userid);
         public Task<int> GetTotalUsers(string token);
+        public Task<List<UserResponse>> GetFollowers(int page, int limit, string token, Guid userid);
+        public Task<List<UserResponse>> GetFollowings(int page, int limit, string token, Guid userid);
+        public Task<int> GetTotalFollowerUsers(string token, Guid userid, string type);
     }
 }

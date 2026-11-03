@@ -74,5 +74,20 @@ namespace Sabires_Backend_Application.Services
         {
             return await _userRepository.GetTotalUsers(token);
         }
+
+        public async Task<List<UserResponse>> GetFollowers(int page, int limit, string token, Guid userid)
+        {
+            return await _userRepository.GetFollowers(page, limit, token, userid);
+        }
+
+        public async Task<List<UserResponse>> GetFollowings(int page, int limit, string token, Guid userid)
+        {
+            return await _userRepository.GetFollowings(page, limit, token, userid);
+        }
+
+        public async Task<int> GetTotalFollowerUsers(string token, Guid userid, string type)
+        {
+            return await _userRepository.GetTotalFollowerUsers(token, userid, type);
+        }
     }
 }
