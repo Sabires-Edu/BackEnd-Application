@@ -73,8 +73,8 @@ namespace Sabires_Backend_Application.Repositories
 
             var user = response.Models.First();
 
-            var totalFollowers = await client.From<Follower>().Where(follower => follower.FollowerUserId == user.UserId).Count(CountType.Exact);
-            var totalFollowing = await client.From<Follower>().Where(follower => follower.FollowingUserId == user.UserId).Count(CountType.Exact);
+            var totalFollowing = await client.From<Follower>().Where(follower => follower.FollowerUserId == user.UserId && follower.StatusId == 2).Count(CountType.Exact);
+            var totalFollowers = await client.From<Follower>().Where(follower => follower.FollowingUserId == user.UserId && follower.StatusId == 2).Count(CountType.Exact);
 
             return new MeResponse
             {
@@ -157,9 +157,13 @@ namespace Sabires_Backend_Application.Repositories
             int inicio = (page - 1) * limit;
             int fim = inicio + limit - 1;
 
-            var followerResponse = await client.From<Follower>().Select("""*, followeruser:publicuser!FK_Users_FollowerUserId(*)""").Range(inicio, fim).Where(follower => follower.FollowerUserId == userid).Get();
+            //var test = await client.From<Follower>().Where(follower => follower.FollowerUserId == user.UserId).Get();
 
-            return followerResponse.Models.Select(follower => DeserializeUserResponse.DeserializeUsers(follower.FollowerUser)).ToList();
+            var followerResponse = await adminClient.From<Follower>().Select("""*, users!fk_users_followeruserid(*)""").Range(inicio, fim).Where(follower => follower.FollowerUserId == userid).Get();
+
+            Console.WriteLine("Teste");
+
+            return followerResponse.Models.Select(follower => DeserializeUserResponse.DeserializeUsers(follower.)).ToList();
         }
 
         public async Task<List<UserResponse>> GetFollowings(int page, int limit, string token, Guid userid)

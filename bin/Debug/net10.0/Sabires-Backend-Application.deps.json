@@ -10,6 +10,7 @@
         "dependencies": {
           "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.13",
           "Microsoft.AspNetCore.OpenApi": "10.0.12",
+          "OneOf": "3.0.271",
           "Supabase": "8.1.1"
         },
         "runtime": {
@@ -140,6 +141,14 @@
           "lib/netstandard2.0/MimeMapping.dll": {
             "assemblyVersion": "4.0.0.0",
             "fileVersion": "4.0.0.0"
+          }
+        }
+      },
+      "OneOf/3.0.271": {
+        "runtime": {
+          "lib/netstandard2.0/OneOf.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -357,6 +366,13 @@
       "sha512": "sha512-5WK3+mjdCeCKg3znVr+sm/sikVnya7UOHWxt4vJeW+Tbp2GgdLiBLRFBJ91oDyL/NcDVd1sEelQ7ixIN68s33g==",
       "path": "mimemapping/4.0.0",
       "hashPath": "mimemapping.4.0.0.nupkg.sha512"
+    },
+    "OneOf/3.0.271": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pqpqeK8xQGggExhr4tesVgJkjdn+9HQAO0QgrYV2hFjE3y90okzk1kQMntMiUOGfV7FrCUfKPaVvPBD4IANqKg==",
+      "path": "oneof/3.0.271",
+      "hashPath": "oneof.3.0.271.nupkg.sha512"
     },
     "Supabase/8.1.1": {
       "type": "package",

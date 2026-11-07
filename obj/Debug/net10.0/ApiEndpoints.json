@@ -64,22 +64,17 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
-    "Method": "Me",
-    "RelativePath": "v1/users/me",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "GetFollowers",
-    "RelativePath": "v1/users/me/followers",
+    "RelativePath": "v1/users/followers/{userid}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "userid",
+        "Type": "System.String",
+        "IsRequired": true
+      },
       {
         "Name": "page",
         "Type": "System.Int32",
@@ -91,6 +86,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "Me",
+    "RelativePath": "v1/users/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

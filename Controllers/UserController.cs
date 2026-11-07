@@ -130,8 +130,8 @@ namespace Sabires_Backend_Application.Controllers
         }
 
         [Authorize]
-        [HttpGet("me/followers")]
-        public async Task<IActionResult> GetFollowers([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        [HttpGet("followers/{userid}")]
+        public async Task<IActionResult> GetFollowers([FromRoute] string userid, [FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
             if (page < 1)
                 throw new BadRequestException("Insira uma página válida.");
@@ -141,13 +141,11 @@ namespace Sabires_Backend_Application.Controllers
 
             string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
-            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(useridClaim, out Guid userid))
+            if (!Guid.TryParse(userid, out Guid useridparse))
                 throw new UnauthorizedException("O identificador do usuário é inválido. Por favor faça login e tente novamente.");
 
-            var followers = await _userService.GetFollowers(page, limit, token, userid);
-            var total = await _userService.GetTotalFollowerUsers(token, userid, "follower");
+            var followers = await _userService.GetFollowers(page, limit, token, useridparse);
+            var total = await _userService.GetTotalFollowerUsers(token, useridparse, "follower");
 
             return StatusCode(200, new SuccessResponse
             {

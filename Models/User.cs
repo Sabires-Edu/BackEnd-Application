@@ -93,14 +93,14 @@ namespace Sabires_Backend_Application.Models
         [Supabase.Postgrest.Attributes.Column("followeruserid")]
         public Guid FollowerUserId { get; set; }
 
-        [Reference(typeof(PublicUser))]
-        public PublicUser FollowerUser { get; set; }
+        //[Reference(typeof(User))]
+        public User FollowerUser { get; set; }
         
         [Supabase.Postgrest.Attributes.Column("followinguserid")]
         public Guid FollowingUserId { get; set; }
 
-        [Reference(typeof(PublicUser))]
-        public PublicUser FollowingUser { get; set; }
+        //[Reference(typeof(User))]
+        public User FollowingUser { get; set; }
 
         [Supabase.Postgrest.Attributes.Column("statusid")]
         public int StatusId { get; set; }
