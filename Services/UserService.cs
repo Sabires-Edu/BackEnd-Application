@@ -14,7 +14,6 @@ namespace Sabires_Backend_Application.Services
     {
         public readonly IUserRepository _userRepository = userRepository;
         private readonly PasswordHasher<string> Hasher = new PasswordHasher<string>();
-
         private readonly TokenGenerator TokenGenerator = tokenGenerator;
 
         public async Task<string> CreateUser(CreateUserDTO userDTO)
@@ -88,6 +87,31 @@ namespace Sabires_Backend_Application.Services
         public async Task<int> GetTotalFollowerUsers(string token, Guid userid, string type)
         {
             return await _userRepository.GetTotalFollowerUsers(token, userid, type);
+        }
+    
+        public async Task<int> FollowUser(string token, Guid followerUserId, Guid followingUserId)
+        {
+            var followerUser = await _userRepository.GetUserById(followingUserId.ToString(), token);
+
+            return await _userRepository.FollowUser(token, followerUserId, followingUserId);
+        }
+
+        public async Task<List<UserResponse>> GetPendingFollows(int page, int limit, string token, Guid userid)
+        {
+            return await _userRepository.GetPendingFollows(page, limit, token, userid);
+        }
+
+        public async Task<int> GetTotalPendingFollows(string token, Guid userid)
+        {
+            return await _userRepository.GetTotalPendingFollows(token, userid);
+        }
+
+        public async Task UpdateFollowStatus(string token, Guid followerUserId, Guid followingUserId, int status)
+        {
+            if(status != 2 && status != 3)
+                throw new BadRequestException("Status inválido. Por favor insira um status válido.");
+
+            await _userRepository.UpdateFollowStatus(token, followerUserId, followingUserId, status);
         }
     }
 }

@@ -31,4 +31,46 @@ namespace Sabires_Backend_Application.Models
         [JsonPropertyName("student_birthdate")]
         public required DateTimeOffset BirthDate { get; set; }
     }
+
+    public class GetUsers
+    {
+        [JsonPropertyName("inicio")]
+        public required int Inicio { get; set; }
+
+        [JsonPropertyName("limite")]
+        public required int Limite { get; set; }
+
+        [JsonPropertyName("id")]
+        public required Guid Id { get; set; }
+    }
+
+    public class UserFunction
+    {
+        [JsonPropertyName("userid")]
+        public required Guid UserId { get; set; }
+
+        [JsonPropertyName("firstname")]
+        public required string FirstName { get; set; }
+
+        [JsonPropertyName("lastname")]
+        public required string LastName { get; set; }
+
+        [JsonPropertyName("email")]
+        public required string Email { get; set; }
+
+        [JsonPropertyName("profilepicture")]
+        public required string ProfilePicture { get; set; }
+
+        [JsonPropertyName("biography")]
+        public required string Biography { get; set; }
+
+        [JsonPropertyName("statusid")]
+        public required int StatusId { get; set; }
+
+        [JsonPropertyName("followers")]
+        public required int Followers { get; set; }
+
+        [JsonPropertyName("followings")]
+        public required int Followings { get; set; }
+    }
 }

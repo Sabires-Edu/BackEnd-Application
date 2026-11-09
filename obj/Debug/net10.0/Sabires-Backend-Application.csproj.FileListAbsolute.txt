@@ -273,3 +273,4 @@ C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\Sabires-Ba
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\ref\Sabires-Backend-Application.dll
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\bin\Debug\net10.0\OneOf.dll
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\OneOf.dll

@@ -29,4 +29,9 @@
         // Senha
         public required string Password { get; set; }
     }
+
+    public class ChangeFollowStatusDTO
+    {                
+        public required int Status { get; set; }
+    }
 }

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 using Supabase.Postgrest.Models;
-using Supabase.Postgrest.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Sabires_Backend_Application.Models
 {
@@ -57,50 +57,59 @@ namespace Sabires_Backend_Application.Models
     public class PublicUser : BaseModel
     {
         [PrimaryKey("userid")]
+        [JsonPropertyName("userid")]
         public Guid UserId { get; set; }
 
         // Nome
         [Supabase.Postgrest.Attributes.Column("firstname")]
+        [JsonPropertyName("firstname")]
         public string FirstName { get; set; }
 
         // Sobrenome
         [Supabase.Postgrest.Attributes.Column("lastname")]
+        [JsonPropertyName("lastname")]
         public string LastName { get; set; }
 
         // Email
         [Supabase.Postgrest.Attributes.Column("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
 
         // Foto de perfil
         [Supabase.Postgrest.Attributes.Column("profilepicture")]
+        [JsonPropertyName("profilepicture")]
         public string ProfilePicture { get; set; }
 
         // Biografia
         [Supabase.Postgrest.Attributes.Column("biography")]
+        [JsonPropertyName("biography")]
         public string Biography { get; set; }
 
         // Status (Ensino Médio, Ensino Superior, Pós-Graduação, etc.)
         [Supabase.Postgrest.Attributes.Column("statusid")]
+        [JsonPropertyName("statusid")]
         public int StatusId { get; set; }
     }
 
     [Supabase.Postgrest.Attributes.Table("followers")]
     public class Follower : BaseModel
     {
-        [Supabase.Postgrest.Attributes.Column("followersid")]
+        [PrimaryKey("followersid")]        
         public int FollowersId { get; set; }
         
         [Supabase.Postgrest.Attributes.Column("followeruserid")]
         public Guid FollowerUserId { get; set; }
 
         //[Reference(typeof(User))]
-        public User FollowerUser { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public User? FollowerUser { get; set; }
         
         [Supabase.Postgrest.Attributes.Column("followinguserid")]
         public Guid FollowingUserId { get; set; }
 
         //[Reference(typeof(User))]
-        public User FollowingUser { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public User? FollowingUser { get; set; }
 
         [Supabase.Postgrest.Attributes.Column("statusid")]
         public int StatusId { get; set; }

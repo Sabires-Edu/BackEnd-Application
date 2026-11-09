@@ -39,6 +39,14 @@ namespace Sabires_Backend_Application.Models.Response
         // Informações de paginação
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public PaginationResponse? Pagination { get; set; }
+
+        // Informações do seguidor
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string FollowerId { get; set; }
+
+        // Informação extra
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string Result { get; set; }
     }
 
     public class PaginationResponse

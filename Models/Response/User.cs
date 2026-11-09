@@ -61,12 +61,8 @@ namespace Sabires_Backend_Application.Models.Response
         // Status (Ensino Médio, Ensino Superior, Pós-Graduação, etc.)
         public required int StatusId { get; set; }
 
-        // Total de seguidores
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int TotalFollowers { get; set; }
 
-        // Total de usuários que o usuário está seguindo
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int TotalFollowing { get; set; }
     }
 
@@ -86,5 +82,5 @@ namespace Sabires_Backend_Application.Models.Response
 
         // Indica se o usuário é nulo
         public required bool IsNull { get; set; }
-    }
+    }    
 }

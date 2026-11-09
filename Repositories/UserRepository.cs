@@ -1,10 +1,11 @@
 ﻿using Sabires_Backend_Application.Models;
+using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services;
-using Sabires_Backend_Application.Utils.Deserialize;
 using Sabires_Backend_Application.Utils.Exceptions;
 using Supabase;
+using Supabase.Postgrest;
 using System.Text.Json;
 using static Supabase.Postgrest.Constants;
 
@@ -12,8 +13,8 @@ namespace Sabires_Backend_Application.Repositories
 {
     public class UserRepository(SupabaseClientService Client) : IUserRepository
     {
-        public readonly Client client = Client.Client;
-        public readonly Client adminClient = Client.AdminClient;
+        public readonly Supabase.Client client = Client.Client;
+        public readonly Supabase.Client adminClient = Client.AdminClient;
 
         public async Task<Guid> CreateUser(UserStudent user)
         {
@@ -64,7 +65,7 @@ namespace Sabires_Backend_Application.Repositories
 
         public async Task<MeResponse> Me(string token)
         {
-            Client client = Client.InitCustomClient(token);
+            Supabase.Client client = Client.InitCustomClient(token);
 
             var response = await client.From<User>().Get();
 
@@ -87,14 +88,14 @@ namespace Sabires_Backend_Application.Repositories
                 StatusId = user.StatusId,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
-                TotalFollowers = totalFollowers,
-                TotalFollowing = totalFollowing
+                TotalFollowers = totalFollowers == 0 ? 0 : totalFollowers,
+                TotalFollowing = totalFollowing == 0 ? 0 : totalFollowing
             };
         }
 
         public async Task<UserResponse> GetUserById(string userid, string token)
         {
-            Client client = Client.InitCustomClient(token);
+            Supabase.Client client = Client.InitCustomClient(token);
 
             PublicUser user = new PublicUser();
 
@@ -124,26 +125,45 @@ namespace Sabires_Backend_Application.Repositories
                 ProfilePicture = user.ProfilePicture,
                 Biography = user.Biography,
                 StatusId = user.StatusId,
-                TotalFollowers = totalFollowers,
-                TotalFollowing = totalFollowing
+                TotalFollowers = totalFollowers == 0 ? 0 : totalFollowers,
+                TotalFollowing = totalFollowing == 0 ? 0 : totalFollowing
             };
         }
 
         public async Task<List<UserResponse>> GetAllUsers(int page, int limit, string token, Guid userid)
         {
-            Client client = Client.InitCustomClient(token);
+            Supabase.Client client = Client.InitCustomClient(token);
 
             int inicio = (page - 1) * limit;
-            int fim = inicio + limit - 1;
 
-            var response = await client.From<PublicUser>().Range(inicio, fim).Where(user => user.UserId != userid).Get();
+            var config = new GetUsers
+            {
+                Inicio = inicio,
+                Limite = limit,
+                Id = userid
+            };
 
-            return response.Models.Select(user => DeserializeUserResponse.DeserializeUsers(user)).ToList();
+            var response = await client.Rpc("get_all_users", config);
+
+            var users = JsonSerializer.Deserialize<List<UserFunction>>(response.Content);
+
+            return users.Select(user => new UserResponse
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                StatusId = user.StatusId,
+                TotalFollowers = user.Followers == 0 ? 0 : user.Followers,
+                TotalFollowing = user.Followings == 0 ? 0 : user.Followings
+            }).ToList();
         }
 
         public async Task<int> GetTotalUsers(string token)
         {
-            Client client = Client.InitCustomClient(token);
+            Supabase.Client client = Client.InitCustomClient(token);
 
             var total = await client.From<PublicUser>().Count(CountType.Exact);
 
@@ -152,39 +172,145 @@ namespace Sabires_Backend_Application.Repositories
 
         public async Task<List<UserResponse>> GetFollowers(int page, int limit, string token, Guid userid)
         {
-            Client client = Client.InitCustomClient(token);
+            Supabase.Client client = Client.InitCustomClient(token);
 
             int inicio = (page - 1) * limit;
-            int fim = inicio + limit - 1;
 
-            //var test = await client.From<Follower>().Where(follower => follower.FollowerUserId == user.UserId).Get();
+            var config = new GetUsers
+            {
+                Inicio = inicio,
+                Limite = limit,
+                Id = userid
+            };
 
-            var followerResponse = await adminClient.From<Follower>().Select("""*, users!fk_users_followeruserid(*)""").Range(inicio, fim).Where(follower => follower.FollowerUserId == userid).Get();
+            var response = await client.Rpc("get_all_followers", config);
 
-            Console.WriteLine("Teste");
+            var users = JsonSerializer.Deserialize<List<UserFunction>>(response.Content);
 
-            return followerResponse.Models.Select(follower => DeserializeUserResponse.DeserializeUsers(follower.)).ToList();
+            return users.Select(user => new UserResponse
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                StatusId = user.StatusId,
+                TotalFollowers = user.Followers == 0 ? 0 : user.Followers,
+                TotalFollowing = user.Followings == 0 ? 0 : user.Followings
+            }).ToList();
         }
 
         public async Task<List<UserResponse>> GetFollowings(int page, int limit, string token, Guid userid)
         {
-            Client client = Client.InitCustomClient(token);
+            Supabase.Client client = Client.InitCustomClient(token);
 
             int inicio = (page - 1) * limit;
-            int fim = inicio + limit - 1;
 
-            var followingResponse = await client.From<Follower>().Select("""*, followinguser:publicuser!FK_Users_FollowingUserId(*)""").Range(inicio, fim).Where(follower => follower.FollowingUserId == userid).Get();
+            var config = new GetUsers
+            {
+                Inicio = inicio,
+                Limite = limit,
+                Id = userid
+            };
 
-            return followingResponse.Models.Select(follower => DeserializeUserResponse.DeserializeUsers(follower.FollowingUser)).ToList();
+            var response = await client.Rpc("get_all_followings", config);
+
+            var users = JsonSerializer.Deserialize<List<UserFunction>>(response.Content);
+
+            return users.Select(user => new UserResponse
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                StatusId = user.StatusId,
+                TotalFollowers = user.Followers == 0 ? 0 : user.Followers,
+                TotalFollowing = user.Followings == 0 ? 0 : user.Followings
+            }).ToList();
         }
 
         public async Task<int> GetTotalFollowerUsers(string token, Guid userid, string type)
         {
-            Client client = Client.InitCustomClient(token);
+            Supabase.Client client = Client.InitCustomClient(token);
 
-            var total = await client.From<Follower>().Where(type == "follower" ? follower => follower.FollowerUserId == userid : following => following.FollowingUserId == userid).Count(CountType.Exact);
+            var total = await client.From<Follower>().Where(type == "follower" ?
+                (follower => follower.FollowingUserId == userid && follower.StatusId == 2) :
+                (following => following.FollowerUserId == userid && (following.StatusId == 1 || following.StatusId == 2)))
+                .Count(CountType.Exact);
 
             return total;
+        }
+
+        public async Task<int> FollowUser(string token, Guid followerUserId, Guid followingUserId)
+        {
+            Supabase.Client client = Client.InitCustomClient(token);
+
+            var followerBody = new Follower
+            {
+                FollowerUserId = followerUserId,
+                FollowingUserId = followingUserId,
+                StatusId = 1
+            };            
+
+            var response = await client.From<Follower>().Insert(followerBody, new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
+
+            if (string.IsNullOrEmpty(response.Content))
+                throw new InternalServerException("Não foi possível seguir o usuário. Por favor, tente novamente mais tarde.");
+
+            var result = JsonSerializer.Deserialize<List<FollowerResponse>>(response.Content);
+
+            return result[0].FollowersId;
+        }
+
+        public async Task<List<UserResponse>> GetPendingFollows(int page, int limit, string token, Guid userid)
+        {
+            Supabase.Client client = Client.InitCustomClient(token);
+
+            int inicio = (page - 1) * limit;
+
+            var config = new GetUsers
+            {
+                Inicio = inicio,
+                Limite = limit,
+                Id = userid
+            };
+
+            var response = await client.Rpc("get_pending_follows", config);            
+
+            var users = JsonSerializer.Deserialize<List<UserFunction>>(response.Content);
+
+            return users.Select(user => new UserResponse
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePicture = user.ProfilePicture,
+                Biography = user.Biography,
+                StatusId = user.StatusId,
+                TotalFollowers = user.Followers == 0 ? 0 : user.Followers,
+                TotalFollowing = user.Followings == 0 ? 0 : user.Followings
+            }).ToList();
+        }
+
+        public async Task<int> GetTotalPendingFollows(string token, Guid userid)
+        {
+            Supabase.Client client = Client.InitCustomClient(token);
+
+            var total = await client.From<Follower>().Where(follower => follower.FollowingUserId == userid && follower.StatusId == 1)
+                .Count(CountType.Exact);
+
+            return total;
+        }
+
+        public async Task UpdateFollowStatus(string token, Guid followerUserId, Guid followingUserId, int status)
+        {
+            Supabase.Client client = Client.InitCustomClient(token); 
+
+            var response = await client.From<Follower>().Where(follower => follower.FollowerUserId == followerUserId && follower.FollowingUserId == followingUserId && follower.StatusId == 1).Set(follower => follower.StatusId, status).Update();            
         }
     }
 }

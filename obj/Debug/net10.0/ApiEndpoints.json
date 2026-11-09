@@ -65,7 +65,33 @@
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "GetFollowers",
-    "RelativePath": "v1/users/followers/{userid}",
+    "RelativePath": "v1/users/{userid}/followers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userid",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "GetFollowings",
+    "RelativePath": "v1/users/{userid}/followings",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -100,8 +126,45 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
-    "Method": "GetFollowings",
-    "RelativePath": "v1/users/me/followings",
+    "Method": "UpdateFollowStatus",
+    "RelativePath": "v1/users/me/follows/{followeruserid}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "followeruserid",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "status",
+        "Type": "Sabires_Backend_Application.Models.DTO.ChangeFollowStatusDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "FollowUser",
+    "RelativePath": "v1/users/me/follows/{followinguserid}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "followinguserid",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "GetPendingFollows",
+    "RelativePath": "v1/users/me/follows/pending",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
