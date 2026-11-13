@@ -19,5 +19,6 @@ namespace Sabires_Backend_Application.Services.Interface
         public Task<List<UserResponse>> GetPendingFollows(int page, int limit, string token, Guid userid);
         public Task<int> GetTotalPendingFollows(string token, Guid userid);
         public Task UpdateFollowStatus(string token, Guid followerUserId, Guid followingUserId, int status);
+        public Task<StudentById> UpdateUser(string token, UpdateUserDTO user, Guid userid);
     }
 }

@@ -44,6 +44,12 @@ namespace Sabires_Backend_Application.Models
         public required Guid Id { get; set; }
     }
 
+    public class GetStudent
+    {
+        [JsonPropertyName("user_userid")]
+        public Guid UserId { get; set; }
+    }
+
     public class UserFunction
     {
         [JsonPropertyName("userid")]

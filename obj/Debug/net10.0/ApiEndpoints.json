@@ -126,6 +126,22 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
+    "Method": "UpdateUser",
+    "RelativePath": "v1/users/me",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "Sabires_Backend_Application.Models.DTO.UpdateUserDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "UpdateFollowStatus",
     "RelativePath": "v1/users/me/follows/{followeruserid}",
     "HttpMethod": "PATCH",

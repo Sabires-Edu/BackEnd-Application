@@ -83,4 +83,26 @@ namespace Sabires_Backend_Application.Models.Response
         // Indica se o usuário é nulo
         public required bool IsNull { get; set; }
     }    
+
+    public class StudentById {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("firstname")]
+        public required string FirstName { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("lastname")]
+        public required string LastName { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("statusid")]
+        public required int StatusId { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("birthdate")]
+        public required DateTimeOffset BirthDate { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("biography")]
+        public required string Biography { get; set; }
+    }
 }

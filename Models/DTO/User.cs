@@ -1,4 +1,7 @@
-﻿namespace Sabires_Backend_Application.Models.DTO
+﻿using System.Diagnostics;
+using System.Text.Json.Serialization;
+
+namespace Sabires_Backend_Application.Models.DTO
 {
     public class CreateUserDTO
     {
@@ -33,5 +36,14 @@
     public class ChangeFollowStatusDTO
     {                
         public required int Status { get; set; }
+    }
+
+    public class UpdateUserDTO
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public DateTimeOffset? BirthDate { get; set; }
+        public int? StatusId { get; set; }
+        public string? Biography { get; set; }
     }
 }

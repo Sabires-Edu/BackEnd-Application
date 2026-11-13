@@ -253,7 +253,7 @@ namespace Sabires_Backend_Application.Repositories
                 FollowerUserId = followerUserId,
                 FollowingUserId = followingUserId,
                 StatusId = 1
-            };            
+            };
 
             var response = await client.From<Follower>().Insert(followerBody, new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
 
@@ -278,7 +278,7 @@ namespace Sabires_Backend_Application.Repositories
                 Id = userid
             };
 
-            var response = await client.Rpc("get_pending_follows", config);            
+            var response = await client.Rpc("get_pending_follows", config);
 
             var users = JsonSerializer.Deserialize<List<UserFunction>>(response.Content);
 
@@ -308,9 +308,83 @@ namespace Sabires_Backend_Application.Repositories
 
         public async Task UpdateFollowStatus(string token, Guid followerUserId, Guid followingUserId, int status)
         {
-            Supabase.Client client = Client.InitCustomClient(token); 
+            Supabase.Client client = Client.InitCustomClient(token);
 
-            var response = await client.From<Follower>().Where(follower => follower.FollowerUserId == followerUserId && follower.FollowingUserId == followingUserId && follower.StatusId == 1).Set(follower => follower.StatusId, status).Update();            
+            var response = await client.From<Follower>().Where(follower => follower.FollowerUserId == followerUserId && follower.FollowingUserId == followingUserId && follower.StatusId == 1).Set(follower => follower.StatusId, status).Update();
+        }
+
+        public async Task<StudentById> GetStudentById(Guid userid, string token)
+        {
+            Supabase.Client client = Client.InitCustomClient(token);
+
+            var config = new GetStudent
+            {
+                UserId = userid
+            };
+
+            var response = await client.Rpc("get_user_student", config);
+
+            if (string.IsNullOrEmpty(response.Content))
+                throw new NotFoundException("Estudante não encontrado.");
+
+            var student = JsonSerializer.Deserialize<List<StudentById>>(response.Content);
+
+            if (student == null || student.Count == 0)
+                throw new InternalServerException("Houve um erro ao carregar os dados do estudante. Por favor tente novamente mais tarde.");
+
+            return student[0];
+        }
+
+        public async Task<StudentById> UpdateUser(string token, UpdateUserDTO user, Guid userId)
+        {
+            Supabase.Client client = Client.InitCustomClient(token);
+
+            var query = client.From<User>().Where(u => u.UserId == userId);
+            DateTimeOffset BirthDate = new DateTimeOffset();
+
+            if (!string.IsNullOrEmpty(user.FirstName))
+                query = query.Set(u => u.FirstName, user.FirstName);
+
+            if (!string.IsNullOrEmpty(user.LastName))
+                query = query.Set(u => u.LastName, user.LastName);
+
+            if (user.StatusId != null)
+                query = query.Set(u => u.StatusId, user.StatusId);
+
+            if (!string.IsNullOrEmpty(user.Biography))
+                query = query.Set(u => u.Biography, user.Biography); 
+
+            if (user.BirthDate != null)
+            {
+                var studentQuery = client.From<Student>().Where(s => s.UserId == userId).Set(s => s.BirthDate, user.BirthDate);   
+                
+                var studentResponse = await studentQuery.Update(new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
+
+                if (string.IsNullOrEmpty(studentResponse.Content))
+                    throw new InternalServerException("Não foi possível atualizar o usuário. Por favor, tente novamente mais tarde.");
+
+                var StudentUpdated = studentResponse.Models.First();
+
+                BirthDate = StudentUpdated.BirthDate;
+            }
+
+            query = query.Set(u => u.UpdatedAt, DateTimeOffset.UtcNow);
+
+            var response = await query.Update(new QueryOptions { Returning = QueryOptions.ReturnType.Representation });
+
+            if (string.IsNullOrEmpty(response.Content))
+                throw new InternalServerException("Não foi possível atualizar o usuário. Por favor, tente novamente mais tarde.");
+
+            var updatedUser = response.Models.First();
+
+            return new StudentById
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Biography = user.Biography,
+                StatusId = user.StatusId ?? 0,
+                BirthDate = BirthDate
+            };
         }
     }
 }

@@ -110,8 +110,15 @@ namespace Sabires_Backend_Application.Services
         {
             if(status != 2 && status != 3)
                 throw new BadRequestException("Status inválido. Por favor insira um status válido.");
-
+                
             await _userRepository.UpdateFollowStatus(token, followerUserId, followingUserId, status);
+        }
+
+        public async Task<StudentById> UpdateUser(string token, UpdateUserDTO user, Guid userid)
+        {
+            var currentUser = await _userRepository.GetStudentById(userid, token);
+            UserValidation.ValidateUpdateUser(user, currentUser, _userRepository);
+            return await _userRepository.UpdateUser(token, user, userid);
         }
     }
 }

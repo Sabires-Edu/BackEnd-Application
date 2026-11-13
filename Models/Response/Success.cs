@@ -47,6 +47,10 @@ namespace Sabires_Backend_Application.Models.Response
         // Informação extra
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string Result { get; set; }
+
+        // Informações do estudante
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public StudentById Student { get; set; }
     }
 
     public class PaginationResponse

@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
+using Sabires_Backend_Application.Models;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Utils.Exceptions;
 using System.Text.RegularExpressions;
@@ -25,6 +26,25 @@ namespace Sabires_Backend_Application.Utils.Validation
             ValidatePassword(user.Password);
             ValidateBirthDate(user.BirthDate);
             ValidateStatus(user.StatusId);
+        }
+
+        public static void ValidateUpdateUser(UpdateUserDTO user, StudentById currentUser, IUserRepository repository)
+        {
+            if(!string.IsNullOrEmpty(user.FirstName))
+                ValidateFirstName(user.FirstName, currentUser.FirstName);
+            
+            if(!string.IsNullOrEmpty(user.LastName))
+                ValidateLastName(user.LastName, currentUser.LastName);
+            
+            if(user.BirthDate != null)
+                ValidateBirthDate(user.BirthDate, currentUser.BirthDate);
+
+            if (user.StatusId != null)
+                ValidateStatus(user.StatusId ?? 0, currentUser.StatusId);
+
+            if(!string.IsNullOrEmpty(user.Biography))
+                ValidateBiography(user.Biography, currentUser.Biography);
+
         }
 
         public static void ValidateFirstName(string FirstName, string currentName = "")
@@ -134,5 +154,19 @@ namespace Sabires_Backend_Application.Utils.Validation
                 throw new BadRequestException("O novo status não pode ser igual ao status atual. Por favor altere para um status diferente.");
         }
 
+        public static void ValidateBiography(string Biography, string currentBiography = "")
+        {
+            if (string.IsNullOrEmpty(Biography))
+                throw new BadRequestException("A biografia não pode ser vazio. Por favor insira um biografia válido.");
+
+            if (Biography.Length < 5 || Biography.Length > 255)
+                throw new BadRequestException("A biografia deve ter entre 5 e 255 caracteres. Por favor insira um biografia com um comprimento válido.");
+
+            if (!NameRegex.IsMatch(Biography))
+                throw new BadRequestException("A biografia contém caracteres inválidos. Por favor insira apenas letras e números.");
+
+            if (Biography == currentBiography)
+                throw new BadRequestException("A nova biografia não pode ser igual à biografia atual. Por favor altere para uma biografia diferente.");
+        }
     }
 }

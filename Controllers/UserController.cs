@@ -296,5 +296,33 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+        [Authorize]
+        [HttpPatch("me")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO user)
+        {
+            if (user.FirstName == null && user.LastName == null && user.BirthDate == null && user.StatusId == null && user.Biography == null)
+                throw new BadRequestException("Nenhum campo para atualização foi fornecido. Por favor insira pelo menos um campo para atualização.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido..");
+
+            var student = await _userService.UpdateUser(token, user, userid);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Informações do usuário atualizadas corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Student = student
+                }
+            });
+        }
     }
 }
