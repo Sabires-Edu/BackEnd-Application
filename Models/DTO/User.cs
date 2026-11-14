@@ -46,4 +46,11 @@ namespace Sabires_Backend_Application.Models.DTO
         public int? StatusId { get; set; }
         public string? Biography { get; set; }
     }
+
+    public class UpdatePasswordDTO
+    {
+        public required string CurrentPassword { get; set; }
+        public required string ConfirmNewPassword { get; set; }
+        public required string NewPassword { get; set; }
+    }
 }

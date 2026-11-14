@@ -7,6 +7,7 @@ using Sabires_Backend_Application.Services.Interface;
 using Sabires_Backend_Application.Utils.Exceptions;
 using Sabires_Backend_Application.Utils.Token;
 using Sabires_Backend_Application.Utils.Validation;
+using Supabase.Gotrue;
 
 namespace Sabires_Backend_Application.Services
 {
@@ -42,7 +43,7 @@ namespace Sabires_Backend_Application.Services
 
         public async Task<string> Login(LoginUserDTO userDTO)
         {
-            var user = await _userRepository.GetPrivateUserByEmail(userDTO.Email);
+            var user = await _userRepository.GetPrivateUserByEmailOrId(email: userDTO.Email);
 
             if (user.IsNull)
                 throw new UnauthorizedException("Email ou senha incorretos");
@@ -119,6 +120,20 @@ namespace Sabires_Backend_Application.Services
             var currentUser = await _userRepository.GetStudentById(userid, token);
             UserValidation.ValidateUpdateUser(user, currentUser, _userRepository);
             return await _userRepository.UpdateUser(token, user, userid);
+        }
+    
+        public async Task UpdatePassword(string token, UpdatePasswordDTO password, Guid userid)
+        {
+            var currentUser = await _userRepository.GetPrivateUserByEmailOrId(id: userid);
+
+            if (currentUser.IsNull)
+                throw new BadRequestException("Usuário não encontrado.");            
+
+            UserValidation.ValidateUpdatePassword(password, currentUser.User.Password);
+
+            var hashedPassword = Hasher.HashPassword(null, password.NewPassword);
+
+            await _userRepository.UpdatePassword(token, hashedPassword, userid);
         }
     }
 }

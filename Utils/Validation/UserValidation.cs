@@ -1,7 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Sabires_Backend_Application.Models;
 using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
-using Sabires_Backend_Application.Models;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Utils.Exceptions;
 using System.Text.RegularExpressions;
@@ -11,19 +12,19 @@ namespace Sabires_Backend_Application.Utils.Validation
     public class UserValidation
     {
         public static readonly Regex NameRegex = new Regex(@"[a-zA-Z]");
-
         public static readonly Regex EmailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
         private static readonly Regex SpecialCharRegex = new Regex(@"[^\p{L}\p{Nd}_]");
         private static readonly Regex UpperCaseRegex = new Regex(@"[A-Z]");
         private static readonly Regex LowerCaseRegex = new Regex(@"[a-z]");
         private static readonly Regex NumberRegex = new Regex(@"[0-9]");
+        private static readonly PasswordHasher<string> Hasher = new PasswordHasher<string>();
 
         public static void ValidateUserInput(CreateUserDTO user, IUserRepository repository)
         {
             ValidateFirstName(user.FirstName);
             ValidateLastName(user.LastName);
             ValidateEmail(repository, user.Email);
-            ValidatePassword(user.Password);
+            ValidatePassword(user.Password, user.Password);
             ValidateBirthDate(user.BirthDate);
             ValidateStatus(user.StatusId);
         }
@@ -44,7 +45,11 @@ namespace Sabires_Backend_Application.Utils.Validation
 
             if(!string.IsNullOrEmpty(user.Biography))
                 ValidateBiography(user.Biography, currentUser.Biography);
+        }
 
+        public static void ValidateUpdatePassword(UpdatePasswordDTO password, string hashedPassword)
+        {
+            ValidatePassword(password.NewPassword, password.ConfirmNewPassword, password.CurrentPassword, hashedPassword);
         }
 
         public static void ValidateFirstName(string FirstName, string currentName = "")
@@ -94,10 +99,16 @@ namespace Sabires_Backend_Application.Utils.Validation
                 throw new BadRequestException("O email já está em uso. Por favor insira um email diferente.");
         }
 
-        public static void ValidatePassword(string Password, string currentPassword = "")
+        public static void ValidatePassword(string Password, string ConfirmPassword, string currentPassword = "", string hashedPassword = "")
         {
             if (Password == currentPassword)
                 throw new BadRequestException("A nova senha não pode ser igual à senha atual. Por favor altere para uma senha diferente.");
+
+            if(Hasher.VerifyHashedPassword(null, hashedPassword, currentPassword) != PasswordVerificationResult.Success)
+                throw new BadRequestException("A senha atual está incorreta. Por favor, tente novamente.");
+
+            if (Password != ConfirmPassword)
+                throw new BadRequestException("A senha confirmada está diferente da senha digitada. Por favor, tente novamente.");
 
             if (string.IsNullOrEmpty(Password))
                 throw new BadRequestException("A senha não pode ser vazia. Por favor insira uma senha válida.");

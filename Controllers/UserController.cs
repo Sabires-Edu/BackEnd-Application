@@ -324,5 +324,30 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+        [Authorize]
+        [HttpPatch("me/password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDTO password)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido..");
+
+            await _userService.UpdatePassword(token, password, userid);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Senha do usuário atualizada corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Result = "Senha atualizada corretamente."
+                }
+            });
+        }
     }
 }

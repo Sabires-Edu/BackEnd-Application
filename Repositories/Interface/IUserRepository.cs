@@ -8,7 +8,7 @@ namespace Sabires_Backend_Application.Repositories.Interface
     {
         public Task<Guid> CreateUser(UserStudent user);
         public Task<UserByEmailResponse> GetUserByEmail(string email);
-        public Task<PrivateUserByEmailResponse> GetPrivateUserByEmail(string email);
+        public Task<PrivateUserByEmailResponse> GetPrivateUserByEmailOrId(string email = "", Guid id = default(Guid));
         public Task<MeResponse> Me(string token);
         public Task<UserResponse> GetUserById(string userid, string token);
         public Task<List<UserResponse>> GetAllUsers(int page, int limit, string token, Guid userid);
@@ -22,5 +22,6 @@ namespace Sabires_Backend_Application.Repositories.Interface
         public Task UpdateFollowStatus(string token, Guid followerUserId, Guid followingUserId, int status);
         public Task<StudentById> GetStudentById(Guid userid, string token);
         public Task<StudentById> UpdateUser(string token, UpdateUserDTO user, Guid userid);
+        public Task UpdatePassword(string token, string password, Guid userid);
     }
 }

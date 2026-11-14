@@ -50,12 +50,12 @@ namespace Sabires_Backend_Application.Repositories
             return new UserByEmailResponse { User = response.Models.First(), IsNull = false };
         }
 
-        public async Task<PrivateUserByEmailResponse?> GetPrivateUserByEmail(string email)
+        public async Task<PrivateUserByEmailResponse?> GetPrivateUserByEmailOrId(string email = "", Guid id = default(Guid))
         {
             if (adminClient == null)
                 throw new Exception("Cliente é nulo.");
 
-            var response = await adminClient.From<User>().Where(user => user.Email == email).Get();
+            var response = await adminClient.From<User>().Where(user => (email != "" ? user.Email == email : user.UserId == id)).Get();
 
             if (response.Models.Count == 0)
                 return new PrivateUserByEmailResponse { IsNull = true };
@@ -385,6 +385,16 @@ namespace Sabires_Backend_Application.Repositories
                 StatusId = user.StatusId ?? 0,
                 BirthDate = BirthDate
             };
+        }
+    
+        public async Task UpdatePassword(string token, string hashedPassword, Guid userid)
+        {
+            Supabase.Client client = Client.InitCustomClient(token);
+
+            var response = await client.From<User>().Where(user => user.UserId == userid).Set(user => user.Password, hashedPassword).Update();
+
+            if (string.IsNullOrEmpty(response.Content))
+                throw new InternalServerException("Não foi possível atualizar a senha do usuário. Por favor, tente novamente mais tarde.");
         }
     }
 }
