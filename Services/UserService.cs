@@ -11,9 +11,10 @@ using Supabase.Gotrue;
 
 namespace Sabires_Backend_Application.Services
 {
-    public class UserService(IUserRepository userRepository, TokenGenerator tokenGenerator) : IUserService
+    public class UserService(IUserRepository userRepository, IProfilePicture profilePicture, TokenGenerator tokenGenerator) : IUserService
     {
         public readonly IUserRepository _userRepository = userRepository;
+        public readonly IProfilePicture _profilePicture = profilePicture;
         private readonly PasswordHasher<string> Hasher = new PasswordHasher<string>();
         private readonly TokenGenerator TokenGenerator = tokenGenerator;
 
@@ -134,6 +135,40 @@ namespace Sabires_Backend_Application.Services
             var hashedPassword = Hasher.HashPassword(null, password.NewPassword);
 
             await _userRepository.UpdatePassword(token, hashedPassword, userid);
+        }
+    
+        public async Task<string> UploadProfilePicture(string token, Guid userid, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                throw new BadRequestException("Nenhum arquivo enviado.");
+
+            if (file.Length  > 5 * 1024 * 1024)
+                throw new BadRequestException("O tamanho do arquivo excede o limite de 5MB.");
+
+            var fileUrl = await _profilePicture.UploadFile(token, userid, file);
+
+            try
+            {
+                await _userRepository.UpdateProfilePicture(token, userid, fileUrl);
+                return fileUrl;
+            }
+            catch
+            {
+                var uploadedFileUrl = new Uri(fileUrl).AbsolutePath;
+
+                var marker = $"/storage/v1/object/public/profile/";
+
+                var index = uploadedFileUrl.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+
+                if (index >= 0)
+                {
+                    var path = uploadedFileUrl[(index + marker.Length)..];
+                    
+                    await _profilePicture.DeleteFile(token, Uri.UnescapeDataString(path));
+                }
+
+                throw new InternalServerException("Houve um erro ao salvar a sua foto de perfil. Por favor tente novamente mais tarde.");
+            }
         }
     }
 }

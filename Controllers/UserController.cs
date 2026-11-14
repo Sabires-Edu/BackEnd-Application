@@ -349,5 +349,30 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+        [Authorize]
+        [HttpPut("me/picture")]
+        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile file)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido..");
+
+            var fileUrl = await _userService.UploadProfilePicture(token, userid, file);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Foto de perfil atualizada corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Result = "Foto de perfil atualizada corretamente. Endereço: " + fileUrl
+                }
+            });
+        }
     }
 }

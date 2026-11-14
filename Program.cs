@@ -19,6 +19,7 @@ builder.Services.AddScoped<TokenGenerator>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProfilePicture, ProfilePictureRepository>();
 
 builder.Services.AddExceptionHandler<CustomerExceptionsHandler>();
 builder.Services.AddProblemDetails();

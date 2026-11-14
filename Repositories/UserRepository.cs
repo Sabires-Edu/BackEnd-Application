@@ -396,5 +396,15 @@ namespace Sabires_Backend_Application.Repositories
             if (string.IsNullOrEmpty(response.Content))
                 throw new InternalServerException("Não foi possível atualizar a senha do usuário. Por favor, tente novamente mais tarde.");
         }
+    
+        public async Task UpdateProfilePicture(string token, Guid userid, string profilePictureUrl)
+        {
+            Supabase.Client client = Client.InitCustomClient(token);
+
+            var response = await client.From<User>().Where(user => user.UserId == userid).Set(user => user.ProfilePicture, profilePictureUrl).Update();
+
+            if (string.IsNullOrEmpty(response.Content))
+                throw new InternalServerException("Não foi possível atualizar a foto de perfil do usuário. Por favor, tente novamente mais tarde.");
+        }
     }
 }

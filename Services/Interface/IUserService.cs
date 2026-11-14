@@ -21,5 +21,6 @@ namespace Sabires_Backend_Application.Services.Interface
         public Task UpdateFollowStatus(string token, Guid followerUserId, Guid followingUserId, int status);
         public Task<StudentById> UpdateUser(string token, UpdateUserDTO user, Guid userid);
         public Task UpdatePassword(string token, UpdatePasswordDTO password, Guid userid);
+        public Task<string> UploadProfilePicture(string token, Guid userid, IFormFile file);
     }
 }

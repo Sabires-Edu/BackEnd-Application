@@ -23,5 +23,6 @@ namespace Sabires_Backend_Application.Repositories.Interface
         public Task<StudentById> GetStudentById(Guid userid, string token);
         public Task<StudentById> UpdateUser(string token, UpdateUserDTO user, Guid userid);
         public Task UpdatePassword(string token, string password, Guid userid);
+        public Task UpdateProfilePicture(string token, Guid userid, string fileUrl);
     }
 }
