@@ -19,7 +19,10 @@ builder.Services.AddScoped<TokenGenerator>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IProfilePicture, ProfilePictureRepository>();
+builder.Services.AddScoped<IStorageSupabase, StorageSupabaseRepository>();
+
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 builder.Services.AddExceptionHandler<CustomerExceptionsHandler>();
 builder.Services.AddProblemDetails();

@@ -4,11 +4,9 @@ using Sabires_Backend_Application.Utils.Exceptions;
 
 namespace Sabires_Backend_Application.Repositories
 {
-    public class ProfilePictureRepository(SupabaseClientService Client) : IProfilePicture
-    {
-        private const string BucketName = "profile";
-
-        public async Task<string> UploadFile(string token, Guid userid, IFormFile file)
+    public class StorageSupabaseRepository(SupabaseClientService Client) : IStorageSupabase
+    {        
+        public async Task<string> UploadFile(string token, Guid userid, IFormFile file, string bucket)
         {
             Supabase.Client client = Client.InitCustomClient(token);
 
@@ -22,7 +20,7 @@ namespace Sabires_Backend_Application.Repositories
                 )
             };
 
-            var fileName = $"profile-{Guid.NewGuid()}{extension}";
+            var fileName = $"{bucket}-{Guid.NewGuid()}{extension}";
 
             var filePath = $"users/{userid}/{fileName}";
 
@@ -35,7 +33,7 @@ namespace Sabires_Backend_Application.Repositories
                     await file.CopyToAsync(stream);
                 }
 
-                await client.Storage.From(BucketName).Upload(tempPath, filePath, new Supabase.Storage.FileOptions
+                await client.Storage.From(bucket).Upload(tempPath, filePath, new Supabase.Storage.FileOptions
                 {
                     ContentType = file.ContentType,
                     CacheControl = "3600",
@@ -43,7 +41,7 @@ namespace Sabires_Backend_Application.Repositories
                 },
                 inferContentType: false);
 
-                return client.Storage.From(BucketName).GetPublicUrl(filePath);
+                return client.Storage.From(bucket).GetPublicUrl(filePath);
             }
             finally
             {
@@ -54,10 +52,10 @@ namespace Sabires_Backend_Application.Repositories
             }
         }
  
-        public async Task DeleteFile(string token, string filePath)
+        public async Task DeleteFile(string token, string filePath, string bucket)
         {
             Supabase.Client client = Client.InitCustomClient(token);
-            await client.Storage.From(BucketName).Remove(new List<string> { filePath });
+            await client.Storage.From(bucket).Remove(new List<string> { filePath });
         }
     }
 }

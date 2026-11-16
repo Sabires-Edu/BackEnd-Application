@@ -104,7 +104,7 @@ namespace Sabires_Backend_Application.Utils.Validation
             if (Password == currentPassword)
                 throw new BadRequestException("A nova senha não pode ser igual à senha atual. Por favor altere para uma senha diferente.");
 
-            if(Hasher.VerifyHashedPassword(null, hashedPassword, currentPassword) != PasswordVerificationResult.Success)
+            if(currentPassword != "" && hashedPassword != "" && Hasher.VerifyHashedPassword(null, hashedPassword, currentPassword) != PasswordVerificationResult.Success)
                 throw new BadRequestException("A senha atual está incorreta. Por favor, tente novamente.");
 
             if (Password != ConfirmPassword)

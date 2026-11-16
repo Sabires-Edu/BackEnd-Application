@@ -11,10 +11,10 @@ using Supabase.Gotrue;
 
 namespace Sabires_Backend_Application.Services
 {
-    public class UserService(IUserRepository userRepository, IProfilePicture profilePicture, TokenGenerator tokenGenerator) : IUserService
+    public class UserService(IUserRepository userRepository, IStorageSupabase profilePicture, TokenGenerator tokenGenerator) : IUserService
     {
         public readonly IUserRepository _userRepository = userRepository;
-        public readonly IProfilePicture _profilePicture = profilePicture;
+        public readonly IStorageSupabase _profilePicture = profilePicture;
         private readonly PasswordHasher<string> Hasher = new PasswordHasher<string>();
         private readonly TokenGenerator TokenGenerator = tokenGenerator;
 
@@ -145,7 +145,7 @@ namespace Sabires_Backend_Application.Services
             if (file.Length  > 5 * 1024 * 1024)
                 throw new BadRequestException("O tamanho do arquivo excede o limite de 5MB.");
 
-            var fileUrl = await _profilePicture.UploadFile(token, userid, file);
+            var fileUrl = await _profilePicture.UploadFile(token, userid, file, "profile");
 
             try
             {
@@ -164,7 +164,7 @@ namespace Sabires_Backend_Application.Services
                 {
                     var path = uploadedFileUrl[(index + marker.Length)..];
                     
-                    await _profilePicture.DeleteFile(token, Uri.UnescapeDataString(path));
+                    await _profilePicture.DeleteFile(token, Uri.UnescapeDataString(path), "profile");
                 }
 
                 throw new InternalServerException("Houve um erro ao salvar a sua foto de perfil. Por favor tente novamente mais tarde.");

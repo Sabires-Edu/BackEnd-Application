@@ -10,6 +10,74 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "CreatePost",
+    "RelativePath": "v1/posts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Content",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RootPostId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ParentPostId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Images",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "GetAllPosts",
+    "RelativePath": "v1/posts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "GetPostById",
+    "RelativePath": "v1/posts/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "CreateUser",
     "RelativePath": "v1/users",
