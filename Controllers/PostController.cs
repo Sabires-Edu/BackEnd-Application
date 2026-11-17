@@ -83,8 +83,7 @@ namespace Sabires_Backend_Application.Controllers
         }
 
         [Authorize]
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById(int id)
         {
             string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
@@ -104,9 +103,8 @@ namespace Sabires_Backend_Application.Controllers
         }
 
         [Authorize]
-        [HttpGet]
-        [Route("{id}/comments")]
-        public async Task<IActionResult> GetComments(int id, int page = 1, int limit = 10)
+        [HttpGet("{id}/comments")]
+        public async Task<IActionResult> GetComments(int id, [FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
             if (page < 1)
                 throw new BadRequestException("Insira uma página válida.");
@@ -117,6 +115,7 @@ namespace Sabires_Backend_Application.Controllers
             string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
             var posts = await _postService.GetComments(token, id, page, limit);
+            var total = await _postService.GetTotalComments(token, id);
 
             return StatusCode(200, new SuccessResponse
             {
@@ -128,8 +127,93 @@ namespace Sabires_Backend_Application.Controllers
                     RootPost = posts.RootPost,
                     ParentPost = posts.ParentPost,
                     Post = posts.Post,
-                    Posts = posts.Comments
+                    Posts = posts.Comments,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
                 }
+            });
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetUserPosts([FromQuery] int page = 1, int limit = 10)
+        {
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de posts por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            var posts = await _postService.GetUserPosts(token, userid, page, limit);
+            var total = await _postService.GetTotalUserPosts(token, userid);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Lista de posts retornada corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Posts = posts,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                },
+            });
+        }
+
+        [Authorize]
+        [HttpGet("me/likes")]
+        public async Task<IActionResult> GetUserLikes([FromQuery] int page = 1, int limit = 10)
+        {
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de posts por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            var posts = await _postService.GetUserLikes(token, userid, page, limit);
+            var total = await _postService.GetTotalUserLikes(token, userid);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Lista de posts curtidos retornada corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Posts = posts,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                },
             });
         }
     }

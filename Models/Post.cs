@@ -78,6 +78,29 @@ namespace Sabires_Backend_Application.Models
         public DateTimeOffset Uploadedat { get; set; }
     }
 
+    [Supabase.Postgrest.Attributes.Table("postlikes")]
+    public class PostLike : BaseModel
+    {
+        [PrimaryKey("postlikesid")]
+        public int PostLikesId { get; set; }
+
+        // ID do post ao qual o anexo pertence        
+        [Reference(typeof(Post), ReferenceAttribute.JoinType.Inner)]
+        public Post Post { get; set; }
+
+        // ID do usuário que curtiu o post
+        [Supabase.Postgrest.Attributes.Column("userid")]
+        public Guid UserId { get; set; }
+
+        // ID do post curtido
+        [Supabase.Postgrest.Attributes.Column("postid")]
+        public int PostId { get; set; }
+
+        // Data de curtida
+        [Supabase.Postgrest.Attributes.Column("likedat")]
+        public int LikedAt { get; set; }
+    }
+
     public class PostFunction
     {
         [JsonPropertyName("userid")]

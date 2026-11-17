@@ -104,6 +104,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "GetUserPosts",
+    "RelativePath": "v1/posts/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "GetUserLikes",
+    "RelativePath": "v1/posts/me/likes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "CreateUser",
     "RelativePath": "v1/users",

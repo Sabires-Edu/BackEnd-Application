@@ -98,10 +98,10 @@ namespace Sabires_Backend_Application.Repositories
             {
                 Supabase.Client client = _client.InitCustomClient(token);
 
-                var response = await client.From<Post>().Where(post => post.PostId == id).Delete();                
+                var response = await client.From<Post>().Where(post => post.PostId == id).Delete();
             }
             catch (Exception e)
-            {                
+            {
                 throw new InternalServerException("Não foi possível deletar o post. Por favor, tente novamente mais tarde.");
             }
         }
@@ -131,7 +131,7 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível inserir os arquivos do post. Por favor, tente novamente mais tarde.");
             }
         }
-    
+
         public async Task<List<PostResponse>> GetAllPosts(int page, int limit, string token, Guid userid)
         {
             try
@@ -176,11 +176,11 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível buscar os posts. Por favor, tente novamente mais tarde.");
             }
         }
-    
+
         public async Task<int> GetTotalPosts(string token, Guid userid)
         {
             try
-            {                
+            {
                 Supabase.Client client = _client.InitCustomClient(token);
 
                 var response = await client.From<Post>().Where(post => post.UserId != userid).Count(CountType.Exact);
@@ -192,7 +192,7 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível buscar a quantidade de posts. Por favor, tente novamente mais tarde.");
             }
         }
-    
+
         public async Task<CommentResponse> GetComments(string token, int id, int page, int limit)
         {
             try
@@ -208,7 +208,7 @@ namespace Sabires_Backend_Application.Repositories
                 {
                     rootPostResponse = await GetPostById(token, postResponse.RootPostId);
 
-                    if(postResponse.RootPostId != postResponse.ParentPostId)
+                    if (postResponse.RootPostId != postResponse.ParentPostId)
                         parentPostResponse = await GetPostById(token, postResponse.ParentPostId);
                 }
 
@@ -254,6 +254,145 @@ namespace Sabires_Backend_Application.Repositories
             catch (Exception e)
             {
                 throw new InternalServerException("Não foi possível buscar os comentários do post. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task<int> GetTotalComments(string token, int id)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var response = await client.From<Post>().Where(post => post.ParentPostId == id).Count(CountType.Exact);
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar a quantidade de comentários do post. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task<List<PostResponse>> GetUserPosts(string token, Guid userid, int page, int limit)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var response = await client.From<Post>().Where(post => post.UserId == userid).Range((page - 1) * limit, (page * limit) - 1).Order("createdat", Ordering.Descending).Get();
+
+                var posts = new List<PostResponse>();
+
+                foreach (var post in response.Models)
+                {
+                    var fileList = new List<string>();
+
+                    if (post.Attachments != null)
+                    {
+                        foreach (var attachment in post.Attachments)
+                        {
+                            fileList.Add(attachment.Filepath);
+                        }
+                    }
+
+                    posts.Add(new PostResponse
+                    {
+                        PostId = post.PostId,
+                        UserId = post.UserId,
+                        Content = post.Content,
+                        RootPostId = post.RootPostId ?? 0,
+                        ParentPostId = post.ParentPostId ?? 0,
+                        Files = fileList,
+                        LikesCount = post.LikesCount,
+                        CommentsCount = post.CommentsCount,
+                        CreatedAt = post.CreatedAt,
+                        UpdatedAt = post.UpdatedAt,
+                    });
+                }
+
+                return posts;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar os posts do usuário. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task<int> GetTotalUserPosts(string token, Guid userid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var response = await client.From<Post>().Where(post => post.UserId == userid).Count(CountType.Exact);
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar a quantidade de posts do usuário. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task<List<PostResponse>> GetUserLikes(string token, Guid userid, int page, int limit)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var response = await client.From<PostLike>().Where(postLike => postLike.UserId == userid).Order("likedat", Ordering.Descending).Range((page - 1) * limit, (page * limit) - 1).Get();
+
+                var posts = new List<PostResponse>();
+
+                foreach (var post in response.Models)
+                {
+                    var fileList = new List<string>();
+
+                    if (post.Post.Attachments != null)
+                    {
+                        foreach (var attachment in post.Post.Attachments)
+                        {
+                            fileList.Add(attachment.Filepath);
+                        }
+                    }
+
+                    posts.Add(new PostResponse
+                    {
+                        PostId = post.Post.PostId,
+                        UserId = post.Post.UserId,
+                        Content = post.Post.Content,
+                        RootPostId = post.Post.RootPostId ?? 0,
+                        ParentPostId = post.Post.ParentPostId ?? 0,
+                        Files = fileList,
+                        LikesCount = post.Post.LikesCount,
+                        CommentsCount = post.Post.CommentsCount,
+                        CreatedAt = post.Post.CreatedAt,
+                        UpdatedAt = post.Post.UpdatedAt,
+                    });
+                }
+
+                return posts;
+            }
+            catch (Exception e)
+            {                
+                throw new InternalServerException("Não foi possível buscar os posts curtidos pelo usuário. Por favor, tente novamente mais tarde.");
+            }
+
+        }
+
+        public async Task<int> GetTotalUserLikes(string token, Guid userid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var response = await client.From<PostLike>().Where(postLike => postLike.UserId == userid).Count(CountType.Exact);
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar a quantidade de posts curtidos pelo usuário. Por favor, tente novamente mais tarde.");
             }
         }
     }

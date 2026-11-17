@@ -36,10 +36,6 @@ namespace Sabires_Backend_Application.Models.Response
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<UserResponse>? Users { get; set; }
 
-        // Informações de paginação
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public PaginationResponse? Pagination { get; set; }
-
         // Informações do seguidor
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string FollowerId { get; set; }
@@ -66,6 +62,10 @@ namespace Sabires_Backend_Application.Models.Response
         // Lista de Posts
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<PostResponse>? Posts { get; set; }
+
+        // Informações de paginação
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public PaginationResponse? Pagination { get; set; }
     }
 
     public class PaginationResponse
