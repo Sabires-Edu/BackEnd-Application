@@ -192,5 +192,69 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível buscar a quantidade de posts. Por favor, tente novamente mais tarde.");
             }
         }
+    
+        public async Task<CommentResponse> GetComments(string token, int id, int page, int limit)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var postResponse = await GetPostById(token, id);
+
+                PostResponse? rootPostResponse = null;
+                PostResponse? parentPostResponse = null;
+
+                if (postResponse.RootPostId != postResponse.PostId)
+                {
+                    rootPostResponse = await GetPostById(token, postResponse.RootPostId);
+
+                    if(postResponse.RootPostId != postResponse.ParentPostId)
+                        parentPostResponse = await GetPostById(token, postResponse.ParentPostId);
+                }
+
+                var response = await client.From<Post>().Where(post => post.ParentPostId == id).Range((page - 1) * limit, (page * limit) - 1).Order("likescount", Ordering.Descending).Get();
+
+                var comments = new List<PostResponse>();
+
+                foreach (var post in response.Models)
+                {
+                    var fileList = new List<string>();
+
+                    if (post.Attachments != null)
+                    {
+                        foreach (var attachment in post.Attachments)
+                        {
+                            fileList.Add(attachment.Filepath);
+                        }
+                    }
+
+                    comments.Add(new PostResponse
+                    {
+                        PostId = post.PostId,
+                        UserId = post.UserId,
+                        Content = post.Content,
+                        RootPostId = post.RootPostId ?? 0,
+                        ParentPostId = post.ParentPostId ?? 0,
+                        Files = fileList,
+                        LikesCount = post.LikesCount,
+                        CommentsCount = post.CommentsCount,
+                        CreatedAt = post.CreatedAt,
+                        UpdatedAt = post.UpdatedAt,
+                    });
+                }
+
+                return new CommentResponse
+                {
+                    Post = postResponse,
+                    RootPost = rootPostResponse,
+                    ParentPost = parentPostResponse,
+                    Comments = comments
+                };
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar os comentários do post. Por favor, tente novamente mais tarde.");
+            }
+        }
     }
 }

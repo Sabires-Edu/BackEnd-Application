@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sabires_Backend_Application.Models;
 using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Services;
@@ -98,6 +99,36 @@ namespace Sabires_Backend_Application.Controllers
                 Response = new Response
                 {
                     Post = post
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("{id}/comments")]
+        public async Task<IActionResult> GetComments(int id, int page = 1, int limit = 10)
+        {
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de posts por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            var posts = await _postService.GetComments(token, id, page, limit);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Comentários retornado corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    RootPost = posts.RootPost,
+                    ParentPost = posts.ParentPost,
+                    Post = posts.Post,
+                    Posts = posts.Comments
                 }
             });
         }

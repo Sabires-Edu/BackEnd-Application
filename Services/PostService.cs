@@ -68,5 +68,10 @@ namespace Sabires_Backend_Application.Services
         {            
             return await _postRepository.GetPostById(token, id);
         }
+    
+        public async Task<CommentResponse> GetComments(string token, int id, int page, int limit)
+        {
+            return await _postRepository.GetComments(token, id, page, limit);
+        }
     }
 }

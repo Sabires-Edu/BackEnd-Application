@@ -78,6 +78,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "GetComments",
+    "RelativePath": "v1/posts/{id}/comments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "CreateUser",
     "RelativePath": "v1/users",

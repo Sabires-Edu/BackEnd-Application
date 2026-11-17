@@ -11,5 +11,6 @@ namespace Sabires_Backend_Application.Repositories.Interface
         public Task InsertFile(string token, int postid, Dictionary<string, string> files);
         public Task<List<PostResponse>> GetAllPosts(int page, int limit, string token, Guid userid);
         public Task<int> GetTotalPosts(string token, Guid userid);
+        public Task<CommentResponse> GetComments(string token, int id, int page, int limit);
     }
 }
