@@ -216,5 +216,44 @@ namespace Sabires_Backend_Application.Controllers
                 },
             });
         }
+
+        [Authorize]
+        [HttpGet("me/trash")]
+        public async Task<IActionResult> GetTrashPosts([FromQuery] int page = 1, int limit = 10)
+        {
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de posts por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            var posts = await _postService.GetTrashPosts(token, userid, page, limit);
+            var total = await _postService.GetTotalTrashPosts(token, userid);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Lista de posts na lixeira retornada corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Posts = posts,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                },
+            });
+        }
     }
 }

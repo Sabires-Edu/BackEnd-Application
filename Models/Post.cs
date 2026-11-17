@@ -85,7 +85,7 @@ namespace Sabires_Backend_Application.Models
         public int PostLikesId { get; set; }
 
         // ID do post ao qual o anexo pertence        
-        [Reference(typeof(Post), ReferenceAttribute.JoinType.Inner)]
+        [Reference(typeof(Post), ReferenceAttribute.JoinType.Left)]
         public Post Post { get; set; }
 
         // ID do usuário que curtiu o post
@@ -98,7 +98,27 @@ namespace Sabires_Backend_Application.Models
 
         // Data de curtida
         [Supabase.Postgrest.Attributes.Column("likedat")]
-        public int LikedAt { get; set; }
+        public DateTimeOffset LikedAt { get; set; }
+    }
+
+    [Supabase.Postgrest.Attributes.Table("trash")]
+    public class Trash : BaseModel
+    {
+        // ID do post ao qual o anexo pertence        
+        [Reference(typeof(Post), ReferenceAttribute.JoinType.Left)]
+        public Post Post { get; set; }
+
+        // ID do usuário que curtiu o post
+        [Supabase.Postgrest.Attributes.Column("userid")]
+        public Guid UserId { get; set; }
+
+        // ID do post curtido
+        [Supabase.Postgrest.Attributes.Column("postid")]
+        public int PostId { get; set; }
+
+        // Data de exclusão
+        [Supabase.Postgrest.Attributes.Column("deletedat")]
+        public DateTimeOffset DeletedAt { get; set; }
     }
 
     public class PostFunction

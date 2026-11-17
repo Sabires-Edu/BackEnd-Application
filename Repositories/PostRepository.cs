@@ -339,7 +339,7 @@ namespace Sabires_Backend_Application.Repositories
             try
             {
                 Supabase.Client client = _client.InitCustomClient(token);
-
+                
                 var response = await client.From<PostLike>().Where(postLike => postLike.UserId == userid).Order("likedat", Ordering.Descending).Range((page - 1) * limit, (page * limit) - 1).Get();
 
                 var posts = new List<PostResponse>();
@@ -393,6 +393,65 @@ namespace Sabires_Backend_Application.Repositories
             catch (Exception e)
             {
                 throw new InternalServerException("Não foi possível buscar a quantidade de posts curtidos pelo usuário. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task<List<PostResponse>> GetTrashPosts(string token, Guid userid, int page, int limit)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var response = await client.From<Trash>().Where(trash => trash.UserId == userid).Order("deletedat", Ordering.Descending).Range((page - 1) * limit, (page * limit) - 1).Get();
+
+                var posts = new List<PostResponse>();
+
+                foreach (var post in response.Models)
+                {
+                    var fileList = new List<string>();
+
+                    if (post.Post.Attachments != null)
+                    {
+                        foreach (var attachment in post.Post.Attachments)
+                        {
+                            fileList.Add(attachment.Filepath);
+                        }
+                    }
+
+                    posts.Add(new PostResponse
+                    {
+                        PostId = post.Post.PostId,
+                        UserId = post.Post.UserId,
+                        Content = post.Post.Content,
+                        RootPostId = post.Post.RootPostId ?? 0,
+                        ParentPostId = post.Post.ParentPostId ?? 0,
+                        Files = fileList,
+                        LikesCount = post.Post.LikesCount,
+                        CommentsCount = post.Post.CommentsCount,
+                        CreatedAt = post.Post.CreatedAt,
+                        UpdatedAt = post.Post.UpdatedAt,
+                    });
+                }
+
+                return posts;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar os posts da lixeira do usuário. Por favor, tente novamente mais tarde.");
+            }
+        }
+    
+        public async Task<int> GetTotalTrashPosts(string token, Guid userid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+                var response = await client.From<Trash>().Where(trash => trash.UserId == userid).Count(CountType.Exact);
+                return response;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar a quantidade de posts da lixeira do usuário. Por favor, tente novamente mais tarde.");
             }
         }
     }
