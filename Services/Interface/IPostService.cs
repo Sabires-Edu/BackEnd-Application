@@ -17,5 +17,7 @@ namespace Sabires_Backend_Application.Services.Interface
         public Task<int> GetTotalUserLikes(string token, Guid userid);
         public Task<List<PostResponse>> GetTrashPosts(string token, Guid userid, int page, int limit);
         public Task<int> GetTotalTrashPosts(string token, Guid userid);
+        public Task LikePost(string token, Guid userid, int postid);
+        public Task DislikePost(string token, Guid userid, int postid);
     }
 }

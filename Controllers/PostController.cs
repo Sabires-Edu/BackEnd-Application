@@ -255,5 +255,55 @@ namespace Sabires_Backend_Application.Controllers
                 },
             });
         }
+
+        [Authorize]
+        [HttpPost("me/like/{id}")]
+        public async Task<IActionResult> LikePost(int id)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _postService.LikePost(token, userid, id);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Post curtido corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Result = $"Post {id} curtido com sucesso."
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpDelete("me/dislike/{id}")]
+        public async Task<IActionResult> DislikePost(int id)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _postService.DislikePost(token, userid, id);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Post descurtido corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Result = $"Post {id} descurtido com sucesso."
+                }
+            });
+        }
     }
 }

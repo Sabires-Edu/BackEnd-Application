@@ -339,7 +339,7 @@ namespace Sabires_Backend_Application.Repositories
             try
             {
                 Supabase.Client client = _client.InitCustomClient(token);
-                
+
                 var response = await client.From<PostLike>().Where(postLike => postLike.UserId == userid).Order("likedat", Ordering.Descending).Range((page - 1) * limit, (page * limit) - 1).Get();
 
                 var posts = new List<PostResponse>();
@@ -374,7 +374,7 @@ namespace Sabires_Backend_Application.Repositories
                 return posts;
             }
             catch (Exception e)
-            {                
+            {
                 throw new InternalServerException("Não foi possível buscar os posts curtidos pelo usuário. Por favor, tente novamente mais tarde.");
             }
 
@@ -440,7 +440,7 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível buscar os posts da lixeira do usuário. Por favor, tente novamente mais tarde.");
             }
         }
-    
+
         public async Task<int> GetTotalTrashPosts(string token, Guid userid)
         {
             try
@@ -452,6 +452,49 @@ namespace Sabires_Backend_Application.Repositories
             catch (Exception e)
             {
                 throw new InternalServerException("Não foi possível buscar a quantidade de posts da lixeira do usuário. Por favor, tente novamente mais tarde.");
+            }
+        }
+        public async Task LikePost(string token, Guid userid, int postid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var postResponse = await GetPostById(token, postid);
+
+                PostLike postLike = new PostLike
+                {
+                    UserId = userid,
+                    PostId = postid,
+                    LikedAt = DateTimeOffset.UtcNow,
+                };
+
+                var response = await client.From<PostLike>().Insert(postLike);
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível curtir o post. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task DislikePost(string token, Guid userid, int postid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var postResponse = await GetPostById(token, postid);
+
+                var checkResponse = await client.From<PostLike>().Where(postLike => postLike.UserId == userid && postLike.PostId == postid).Get();
+
+                if (string.IsNullOrWhiteSpace(checkResponse.Content))
+                    throw new InternalServerException("O usuário logado não curtiu essa postagem, logo não é possível dar dislike");
+
+                var response = await client.From<PostLike>().Where(postLike => postLike.UserId == userid && postLike.PostId == postid).Delete();
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível descurtir o post. Por favor, tente novamente mais tarde.");
             }
         }
     }

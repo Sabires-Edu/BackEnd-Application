@@ -126,6 +126,38 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "DislikePost",
+    "RelativePath": "v1/posts/me/dislike/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "LikePost",
+    "RelativePath": "v1/posts/me/like/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
     "Method": "GetUserLikes",
     "RelativePath": "v1/posts/me/likes",
     "HttpMethod": "GET",

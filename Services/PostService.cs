@@ -108,5 +108,15 @@ namespace Sabires_Backend_Application.Services
         {
             return await _postRepository.GetTotalTrashPosts(token, userid);
         }
+    
+        public async Task LikePost(string token, Guid userid, int postid)
+        {            
+            await _postRepository.LikePost(token, userid, postid);
+        }
+
+        public async Task DislikePost(string token, Guid userid, int postid)
+        {
+            await _postRepository.DislikePost(token, userid, postid);
+        }
     }
 }
