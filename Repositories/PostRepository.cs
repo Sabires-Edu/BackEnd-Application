@@ -138,7 +138,7 @@ namespace Sabires_Backend_Application.Repositories
             {
                 Supabase.Client client = _client.InitCustomClient(token);
 
-                var response = await client.From<Post>().Order("createdat", Supabase.Postgrest.Constants.Ordering.Descending).Range((page - 1) * limit, (page * limit) - 1).Where(post => post.UserId != userid).Get();
+                var response = await client.From<Post>().Order("createdat", Supabase.Postgrest.Constants.Ordering.Descending).Range((page - 1) * limit, (page * limit) - 1).Where(post => post.ParentPostId == null && post.DeletedAt == null).Get();
 
                 var posts = new List<PostResponse>();
 
@@ -173,6 +173,7 @@ namespace Sabires_Backend_Application.Repositories
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw new InternalServerException("Não foi possível buscar os posts. Por favor, tente novamente mais tarde.");
             }
         }
@@ -454,6 +455,7 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível buscar a quantidade de posts da lixeira do usuário. Por favor, tente novamente mais tarde.");
             }
         }
+
         public async Task LikePost(string token, Guid userid, int postid)
         {
             try
@@ -485,16 +487,99 @@ namespace Sabires_Backend_Application.Repositories
 
                 var postResponse = await GetPostById(token, postid);
 
-                var checkResponse = await client.From<PostLike>().Where(postLike => postLike.UserId == userid && postLike.PostId == postid).Get();
+                var checkResponse = await client.From<PostLike>().Where(postLike => postLike.UserId == userid && postLike.PostId == postid).Count(CountType.Exact);
 
-                if (string.IsNullOrWhiteSpace(checkResponse.Content))
-                    throw new InternalServerException("O usuário logado não curtiu essa postagem, logo não é possível dar dislike");
+                if (checkResponse == 0)
+                    throw new BadRequestException("O usuário logado não curtiu essa postagem, logo não é possível dar dislike");
 
                 var response = await client.From<PostLike>().Where(postLike => postLike.UserId == userid && postLike.PostId == postid).Delete();
+            }
+            catch (BadRequestException)
+            {
+                throw;
             }
             catch (Exception e)
             {
                 throw new InternalServerException("Não foi possível descurtir o post. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task TrashPost(string token, Guid userid, int postid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var checkResponse = await client.From<Post>().Where(post => post.UserId == userid && post.PostId == postid).Count(CountType.Exact);
+
+                if (checkResponse == 0)
+                    throw new BadRequestException("O usuário logado não é o dono dessa postagem, logo não é possível mover para a lixeira.");
+
+                var updateResponse = await client.From<Post>().Where(post => post.PostId == postid).Set(post => post.DeletedAt, DateTimeOffset.UtcNow).Update();
+
+                Trash trash = new Trash
+                {
+                    UserId = userid,
+                    PostId = postid,
+                    DeletedAt = DateTimeOffset.UtcNow,
+                };
+
+                var response = await client.From<Trash>().Insert(trash);
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível mover o post para a lixeira. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task RestorePost(string token, Guid userid, int postid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var checkResponse = await client.From<Trash>().Where(trash => trash.UserId == userid && trash.PostId == postid).Count(CountType.Exact);
+
+                if (checkResponse == 0)
+                    throw new BadRequestException("O postagem não está na lixeira ou o usuário logado não é o dono dessa postagem, logo não é possível restaurar o post da lixeira.");
+
+                var updateResponse = await client.From<Post>().Where(post => post.PostId == postid).Set(post => post.DeletedAt, null).Update();
+                var response = await client.From<Trash>().Where(trash => trash.UserId == userid && trash.PostId == postid).Delete();
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível restaurar o post da lixeira. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task RemovePost(string token, Guid userid, int postid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var checkResponse = await client.From<Trash>().Where(trash => trash.UserId == userid && trash.PostId == postid).Count(CountType.Exact);
+
+                if (checkResponse == 0)
+                    throw new BadRequestException("O postagem não está na lixeira ou o usuário logado não é o dono dessa postagem, logo não é possível remover o post da lixeira.");
+
+                var response = await client.From<Post>().Where(post => post.PostId == postid).Delete();                
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível remover o post da lixeira. Por favor, tente novamente mais tarde.");
             }
         }
     }

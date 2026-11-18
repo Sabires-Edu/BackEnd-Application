@@ -199,6 +199,54 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "TrashPost",
+    "RelativePath": "v1/posts/me/trash/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "RemovePost",
+    "RelativePath": "v1/posts/me/trash/remove/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.PostController",
+    "Method": "RestorePost",
+    "RelativePath": "v1/posts/me/trash/restore/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Sabires_Backend_Application.Controllers.UserController",
     "Method": "CreateUser",
     "RelativePath": "v1/users",

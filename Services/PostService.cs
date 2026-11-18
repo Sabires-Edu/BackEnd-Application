@@ -118,5 +118,20 @@ namespace Sabires_Backend_Application.Services
         {
             await _postRepository.DislikePost(token, userid, postid);
         }
+    
+        public async Task TrashPost(string token, Guid userid, int postid)
+        {
+            await _postRepository.TrashPost(token, userid, postid);
+        }
+
+        public async Task RestorePost(string token, Guid userid, int postid)
+        {
+            await _postRepository.RestorePost(token, userid, postid);
+        }
+
+        public async Task RemovePost(string token, Guid userid, int postid)
+        {
+            await _postRepository.RemovePost(token, userid, postid);
+        }
     }
 }

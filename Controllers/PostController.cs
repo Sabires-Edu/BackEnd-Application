@@ -305,5 +305,80 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+        [Authorize]
+        [HttpPost("me/trash/{id}")]
+        public async Task<IActionResult> TrashPost(int id)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _postService.TrashPost(token, userid, id);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Post movido para a lixeira corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Result = $"Post {id} movido para a lixeira com sucesso."
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpDelete("me/trash/restore/{id}")]
+        public async Task<IActionResult> RestorePost(int id)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _postService.RestorePost(token, userid, id);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Post restaurado da lixeira corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Result = $"Post {id} restaurado da lixeira com sucesso."
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpDelete("me/trash/remove/{id}")]
+        public async Task<IActionResult> RemovePost(int id)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _postService.RemovePost(token, userid, id);
+
+            return StatusCode(200, new SuccessResponse
+            {
+                Success = true,
+                Title = "Post removido da lixeira corretamente.",
+                Status = 200,
+                Response = new Response
+                {
+                    Result = $"Post {id} removido da lixeira com sucesso."
+                }
+            });
+        }
     }
 }
