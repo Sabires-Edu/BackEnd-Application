@@ -41,6 +41,20 @@ namespace Sabires_Backend_Application.Repositories
 
                 var postid = JsonSerializer.Deserialize<int>(response.Content);
 
+
+
+                if(post.ParentPostId != null)
+                {
+                    var parentPost = await GetPostById(token, post.ParentPostId);
+                    var responseComment = await adminClient.From<Post>().Set(post => post.CommentsCount, parentPost.CommentsCount + 1).Where(pt => pt.PostId == parentPost.PostId).Update();
+
+                    if(post.ParentPostId != post.RootPostId)
+                    {
+                        var rootPost = await GetPostById(token, post.RootPostId);
+                        var responseRootComment = await adminClient.From<Post>().Set(post => post.CommentsCount, rootPost.CommentsCount + 1).Where(pt => pt.PostId == rootPost.PostId).Update();
+                    }
+                }                
+
                 return postid;
             }
             catch (Exception e)
@@ -280,7 +294,7 @@ namespace Sabires_Backend_Application.Repositories
             {
                 Supabase.Client client = _client.InitCustomClient(token);
 
-                var response = await client.From<Post>().Where(post => post.UserId == userid).Range((page - 1) * limit, (page * limit) - 1).Order("createdat", Ordering.Descending).Get();
+                var response = await client.From<Post>().Where(post => post.UserId == userid && post.DeletedAt == null).Range((page - 1) * limit, (page * limit) - 1).Order("createdat", Ordering.Descending).Get();
 
                 var posts = new List<PostResponse>();
 
@@ -472,6 +486,7 @@ namespace Sabires_Backend_Application.Repositories
                 };
 
                 var response = await client.From<PostLike>().Insert(postLike);
+                var updateResponse = await adminClient.From<Post>().Where(post => post.PostId == postid).Set(post => post.LikesCount, postResponse.LikesCount + 1).Update();
             }
             catch (Exception e)
             {
@@ -493,6 +508,7 @@ namespace Sabires_Backend_Application.Repositories
                     throw new BadRequestException("O usuário logado não curtiu essa postagem, logo não é possível dar dislike");
 
                 var response = await client.From<PostLike>().Where(postLike => postLike.UserId == userid && postLike.PostId == postid).Delete();
+                var updateResponse = await adminClient.From<Post>().Where(post => post.PostId == postid).Set(post => post.LikesCount, postResponse.LikesCount - 1).Update();
             }
             catch (BadRequestException)
             {
@@ -516,6 +532,20 @@ namespace Sabires_Backend_Application.Repositories
                     throw new BadRequestException("O usuário logado não é o dono dessa postagem, logo não é possível mover para a lixeira.");
 
                 var updateResponse = await client.From<Post>().Where(post => post.PostId == postid).Set(post => post.DeletedAt, DateTimeOffset.UtcNow).Update();
+
+                var post = updateResponse.Models.FirstOrDefault();
+
+                if(post.ParentPostId != null)
+                {
+                    var parentPost = await GetPostById(token, post.ParentPostId ?? 0);
+                    var commentResponse = await client.From<Post>().Set(pt => pt.CommentsCount, parentPost.CommentsCount - 1).Where(pt => pt.PostId == parentPost.PostId).Update();
+
+                    if (post.ParentPostId != post.RootPostId)
+                    {
+                        var rootPost = await GetPostById(token, post.RootPostId ?? 0);
+                        var responseRootComment = await adminClient.From<Post>().Set(post => post.CommentsCount, rootPost.CommentsCount - 1).Where(pt => pt.PostId == rootPost.PostId).Update();
+                    }
+                }                
 
                 Trash trash = new Trash
                 {
@@ -548,6 +578,21 @@ namespace Sabires_Backend_Application.Repositories
                     throw new BadRequestException("O postagem não está na lixeira ou o usuário logado não é o dono dessa postagem, logo não é possível restaurar o post da lixeira.");
 
                 var updateResponse = await client.From<Post>().Where(post => post.PostId == postid).Set(post => post.DeletedAt, null).Update();
+
+                var post = updateResponse.Models.FirstOrDefault();
+
+                if (post.ParentPostId != null)
+                {
+                    var parentPost = await GetPostById(token, post.ParentPostId ?? 0);
+                    var commentResponse = await client.From<Post>().Set(pt => pt.CommentsCount, parentPost.CommentsCount + 1).Where(pt => pt.PostId == parentPost.PostId).Update();
+
+                    if (post.ParentPostId != post.RootPostId)
+                    {
+                        var rootPost = await GetPostById(token, post.RootPostId ?? 0);
+                        var responseRootComment = await adminClient.From<Post>().Set(post => post.CommentsCount, rootPost.CommentsCount + 1).Where(pt => pt.PostId == rootPost.PostId).Update();
+                    }
+                }
+
                 var response = await client.From<Trash>().Where(trash => trash.UserId == userid && trash.PostId == postid).Delete();
             }
             catch (BadRequestException)

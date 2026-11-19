@@ -24,6 +24,9 @@ builder.Services.AddScoped<IStorageSupabase, StorageSupabaseRepository>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+
 builder.Services.AddExceptionHandler<CustomerExceptionsHandler>();
 builder.Services.AddProblemDetails();
 

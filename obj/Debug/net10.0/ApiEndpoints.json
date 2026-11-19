@@ -1,5 +1,21 @@
 [
   {
+    "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
+    "Method": "CreateChat",
+    "RelativePath": "v1/chats",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chat",
+        "Type": "Sabires_Backend_Application.Models.DTO.CreateChatDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Sabires_Backend_Application_Controllers.Health",
     "Method": "Ping",
     "RelativePath": "v1/ping",
