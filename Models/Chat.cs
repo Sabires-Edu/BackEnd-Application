@@ -53,11 +53,14 @@ namespace Sabires_Backend_Application.Models
         [Supabase.Postgrest.Attributes.Column("userid")]
         public Guid UserId { get; set; }
 
-        [Reference(typeof(Chat), ReferenceAttribute.JoinType.Inner)]
-        public Chat Chats { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [Reference(typeof(Chat), ReferenceAttribute.JoinType.Inner)]
+        public Chat? Chats { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [Reference(typeof(PublicUser), ReferenceAttribute.JoinType.Inner)]
-        public PublicUser Users { get; set; }
+        public PublicUser? Users { get; set; }
     }
 
     [Supabase.Postgrest.Attributes.Table("message")]
@@ -113,5 +116,14 @@ namespace Sabires_Backend_Application.Models
 
         [JsonPropertyName("membersid_param")]
         public List<Guid> MembersId { get; set; }
+    }
+
+    public class ChatMemberConfig
+    {
+        [Supabase.Postgrest.Attributes.Column("chatid")]
+        public int ChatId { get; set; }
+
+        [Supabase.Postgrest.Attributes.Column("userid")]
+        public Guid UserId { get; set; }
     }
 }

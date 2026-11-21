@@ -51,7 +51,7 @@ namespace Sabires_Backend_Application.Repositories
                 var chat = chatDetails.FirstOrDefault();
 
                 var memberResponse = await adminclient.From<ChatMember>().Where(cm => cm.ChatId == chatid).Range((page - 1) * limit, page * limit - 1).Order("publicuser(firstname)", Ordering.Ascending).Order("publicuser(lastname)", Ordering.Ascending).Get();
-                
+
                 if (string.IsNullOrWhiteSpace(memberResponse.Content))
                     throw new InternalServerException("Não foi possível buscar os membros do chat. Por favor, tente novamente mais tarde.");
 
@@ -60,8 +60,8 @@ namespace Sabires_Backend_Application.Repositories
                 var members = new List<UserResponse>();
 
                 foreach (var member in chatMembers)
-                {               
-                   members.Add(member.Members);      
+                {
+                    members.Add(member.Members);
                 }
 
                 chat.Members = members;
@@ -151,7 +151,7 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível buscar as mensagens do chat. Por favor, tente novamente mais tarde.");
             }
         }
-    
+
         public async Task<int> GetTotalChatMessages(string token, int chatid)
         {
             try
@@ -167,20 +167,101 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Não foi possível buscar a quantidade de mensagens do chat. Por favor, tente novamente mais tarde.");
             }
         }
-    
+
         public async Task<int> GetTotalChatMembers(string token, int chatid)
         {
             try
             {
                 Supabase.Client client = _client.InitCustomClient(token);
 
-                var response = await client.From<ChatMember>().Where(cm => cm.ChatId == chatid).Count(CountType.Exact);
+                var response = await adminclient.From<ChatMember>().Where(cm => cm.ChatId == chatid).Count(CountType.Exact);
 
                 return response;
             }
             catch (Exception e)
             {
                 throw new InternalServerException("Não foi possível buscar a quantidade de membros do chat. Por favor, tente novamente mais tarde.");
+            }
+        }
+
+        public async Task AddMemberToChat(string token, Guid userid, int chatid, Guid memberid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var memberResponse = await client.From<PublicUser>().Where(pu => pu.UserId == memberid).Count(CountType.Exact);
+
+                if (memberResponse == 0)
+                    throw new BadRequestException("Não foi possível encontrar esse usuário. Por favor adicione um membro existente.");
+
+                var ownerResponse = await client.From<Chat>().Where(ct => ct.OwnerId == userid && ct.ChatId == chatid).Count(CountType.Exact);
+
+                if (ownerResponse == 0)
+                    throw new BadRequestException("Você não é o dono do chat. Por favor peça para o dono realizar a operação");
+
+                var chatMemberResponse = await adminclient.From<ChatMember>().Where(cm => cm.ChatId == chatid && cm.UserId == memberid).Count(CountType.Exact);
+
+                if (chatMemberResponse > 0)
+                    throw new BadRequestException("O membro já foi adicionado ao chat. Por favor adicione outro usuário como membro.");
+
+                var newMember = new ChatMember
+                {
+                    ChatId = chatid,
+                    UserId = memberid
+                };
+
+                var response = await adminclient.From<ChatMember>().Insert(newMember);
+
+                if (string.IsNullOrWhiteSpace(response.Content))
+                    throw new InternalServerException("Houve um erro ao inserir o novo membro ao chat. Por favor tente novamente mais tarde.");
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Houve um erro ao inserir o novo membro ao chat. Por favor tente novamente mais tarde.");
+            }
+        }
+
+        public async Task RemoveMemberFromChat(string token, Guid userid, int chatid, Guid memberid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                if (userid == memberid)
+                    throw new BadRequestException("Não é possível remover a si próprio do grupo. Por favor remova outros membros.");
+
+                var memberResponse = await client.From<PublicUser>().Where(pu => pu.UserId == memberid).Count(CountType.Exact);
+
+                if (memberResponse == 0)
+                    throw new BadRequestException("Não foi possível encontrar esse usuário. Por favor adicione um membro existente.");
+
+                var ownerResponse = await client.From<Chat>().Where(ct => ct.OwnerId == userid && ct.ChatId == chatid).Count(CountType.Exact);
+
+                if (ownerResponse == 0)
+                    throw new BadRequestException("Você não é o dono do chat. Por favor peça para o dono realizar a operação");
+
+                var chatMemberResponse = await adminclient.From<ChatMember>().Where(cm => cm.ChatId == chatid && cm.UserId == memberid).Count(CountType.Exact);
+
+                if (chatMemberResponse == 0)
+                    throw new BadRequestException("O membro não está presente no chat. Por favor remova outro membro.");
+
+                var response = await adminclient.From<ChatMember>().Where(cm => cm.UserId == memberid).Delete();
+
+                if (string.IsNullOrWhiteSpace(response.Content))
+                    throw new InternalServerException("Houve um erro ao remover o membro ao chat. Por favor tente novamente mais tarde.");
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Houve um erro ao remover o membro ao chat. Por favor tente novamente mais tarde.");
             }
         }
     }

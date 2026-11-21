@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sabires-Backend-Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d76c58a3d187bd666f02f5fb0cdb6ab8fd0b654c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+386fd7862956ad59881c337c8180994e0b5ddc41")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sabires-Backend-Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sabires-Backend-Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -11,5 +11,7 @@ namespace Sabires_Backend_Application.Services.Interface
         Task<List<MessageResponse>> GetChatMessages(string token, Guid userid, int chatid, int page, int limit);
         Task<int> GetTotalChatMessages(string token, int chatid);
         Task<int> GetTotalChatMembers(string token, int chatid);
+        Task AddMemberToChat(string token, Guid userid, int chatid, Guid memberid);
+        Task RemoveMemberFromChat(string token, Guid userid, int chatid, Guid memberid);
     }
 }

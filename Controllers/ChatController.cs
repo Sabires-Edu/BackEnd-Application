@@ -145,5 +145,56 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+
+        [Authorize]
+        [HttpPost("{chatId}/member/{memberId}")]
+        public async Task<IActionResult> AddMemberToChat([FromRoute] int chatId, [FromRoute] Guid memberId)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _chatService.AddMemberToChat(token, userid, chatId, memberId);
+
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Adicionado o membro ao chat corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Result = $"Usuário {memberId} adicionado ao chat."
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpDelete("{chatId}/member/{memberId}")]
+        public async Task<IActionResult> RemoveMemberToChat([FromRoute] int chatId, [FromRoute] Guid memberId)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _chatService.RemoveMemberFromChat(token, userid, chatId, memberId);
+
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Removido o membro do chat corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Result = $"Usuário {memberId} removido do chat."
+                }
+            });
+        }
     }
 }

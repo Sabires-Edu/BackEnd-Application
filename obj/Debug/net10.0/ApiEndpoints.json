@@ -43,6 +43,48 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
+    "Method": "AddMemberToChat",
+    "RelativePath": "v1/chats/{chatId}/member/{memberId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chatId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "memberId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
+    "Method": "RemoveMemberToChat",
+    "RelativePath": "v1/chats/{chatId}/member/{memberId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chatId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "memberId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
     "Method": "GetChatMessages",
     "RelativePath": "v1/chats/{chatId}/messages",
     "HttpMethod": "GET",
