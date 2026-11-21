@@ -31,6 +31,9 @@ namespace Sabires_Backend_Application.Models.Response
         // Data de atualização
         public required DateTimeOffset UpdatedAt { get; set; }
 
+        // Data de nascimento
+        public required DateOnly BirthDate { get; set; }
+
         // Total de seguidores
         public required int TotalFollowers { get; set; }
 
@@ -41,29 +44,51 @@ namespace Sabires_Backend_Application.Models.Response
     public class UserResponse
     {
         // Identificador do usuário
+        [JsonPropertyName("userid")]
         public required Guid UserId { get; set; }
 
         // Nome
+        [JsonPropertyName("firstname")]
         public required string FirstName { get; set; }
 
         // Sobrenome
+        [JsonPropertyName("lastname")]
         public required string LastName { get; set; }
 
         // Email
+        [JsonPropertyName("email")]
         public required string Email { get; set; }
 
         // Foto de perfil
+
+        [JsonPropertyName("profilepicture")]
         public required string ProfilePicture { get; set; }
 
         // Biografia
+        [JsonPropertyName("biography")]
         public required string Biography { get; set; }
 
         // Status (Ensino Médio, Ensino Superior, Pós-Graduação, etc.)
+        [JsonPropertyName("statusid")]
         public required int StatusId { get; set; }
 
+        [JsonPropertyName("followers")]
         public int TotalFollowers { get; set; }
 
+        [JsonPropertyName("following")]
         public int TotalFollowing { get; set; }
+    }
+
+    public class StudentResponse
+    {
+        [JsonPropertyName("userid")]
+        public Guid UserId { get; set; }
+
+        [JsonPropertyName("birthdate")]
+        public DateOnly BirthDate { get; set; }
+
+        [JsonPropertyName("riskid")]
+        public int RiskId { get; set; }
     }
 
     public class UserByEmailResponse

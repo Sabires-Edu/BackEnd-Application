@@ -18,30 +18,69 @@ namespace Sabires_Backend_Application.Controllers
         public readonly IChatService _chatService = chatService;
         public readonly TokenGenerator _tokenGenerator = tokenGenerator;
 
-        //[Authorize]
-        //[HttpGet("me")]
-        //public async Task<IActionResult> GetMeChat()
-        //{            
-        //    string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMeChat()
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
-        //    string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        //    if (!Guid.TryParse(useridClaim, out Guid userid))
-        //        throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido..");
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido..");
 
-        //    var chats = await _chatService.GetMeChat();
+            var chats = await _chatService.GetMeChat(token, userid);
 
-        //    return StatusCode(201, new SuccessResponse
-        //    {
-        //        Success = true,
-        //        Title = "Post criado corretamente.",
-        //        Status = 201,
-        //        Response = new Response
-        //        {
-        //            Chats = chats
-        //        }
-        //    });
-        //}
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Retornado os chats do usuário corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Chats = chats
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpGet("{chatId}")]
+        public async Task<IActionResult> GetChatById([FromRoute] int chatId, [FromQuery] int page = 1, [FromQuery] int limit = 10)
+        {
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de posts por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            var chat = await _chatService.GetChatById(token, userid, chatId, page, limit);
+            var total = await _chatService.GetTotalChatMembers(token, chatId);
+
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Retornado os detalhes do chat corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Chat = chat,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                }
+            });
+        }
 
         [Authorize]
         [HttpPost]
@@ -59,7 +98,7 @@ namespace Sabires_Backend_Application.Controllers
             return StatusCode(201, new SuccessResponse
             {
                 Success = true,
-                Title = "Post criado corretamente.",
+                Title = "Criado o chat corretamente.",
                 Status = 201,
                 Response = new Response
                 {
@@ -68,5 +107,43 @@ namespace Sabires_Backend_Application.Controllers
             });
         }
 
+        [Authorize]
+        [HttpGet("{chatId}/messages")]
+        public async Task<IActionResult> GetChatMessages([FromRoute] int chatId, [FromQuery] int page = 1, [FromQuery] int limit = 10)
+        {
+            if (page < 1)
+                throw new BadRequestException("Insira uma página válida.");
+
+            if (limit < 1)
+                throw new BadRequestException("Insira uma quantidade válida de posts por página.");
+
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            var messages = await _chatService.GetChatMessages(token, userid, chatId, page, limit);
+            var total = await _chatService.GetTotalChatMessages(token, chatId);
+
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Retornado as mensagens do chat corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Messages = messages,
+                    Pagination = new PaginationResponse
+                    {
+                        Page = page,
+                        Limit = limit,
+                        Total_Elements = total,
+                        Total_Pages = (int)Math.Ceiling((double)total / limit)
+                    }
+                }
+            });
+        }
     }
 }

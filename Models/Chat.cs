@@ -36,7 +36,59 @@ namespace Sabires_Backend_Application.Models
 
         // Data de exclusão do post
         [Supabase.Postgrest.Attributes.Column("deletedat")]
-        public DateTimeOffset DeletedAt { get; set; }
+        public DateTimeOffset? DeletedAt { get; set; }
+    }
+
+    [Supabase.Postgrest.Attributes.Table("chatmembers")]
+    public class ChatMember : BaseModel
+    {
+        [PrimaryKey("chatmemberid")]
+        public int ChatMemberId { get; set; }
+
+        // ID do tipo de chat
+        [Supabase.Postgrest.Attributes.Column("chatid")]
+        public int ChatId { get; set; }
+
+        // ID do proprietário do grupo
+        [Supabase.Postgrest.Attributes.Column("userid")]
+        public Guid UserId { get; set; }
+
+        [Reference(typeof(Chat), ReferenceAttribute.JoinType.Inner)]
+        public Chat Chats { get; set; }
+
+        [Reference(typeof(PublicUser), ReferenceAttribute.JoinType.Inner)]
+        public PublicUser Users { get; set; }
+    }
+
+    [Supabase.Postgrest.Attributes.Table("message")]
+    public class Message : BaseModel
+    {
+        [PrimaryKey("messageid")]
+        public int MessageId { get; set; }
+
+        // ID do tipo de chat
+        [Supabase.Postgrest.Attributes.Column("userid")]
+        public Guid UserId { get; set; }
+
+        // ID do proprietário do grupo
+        [Supabase.Postgrest.Attributes.Column("chatid")]
+        public int ChatId { get; set; }
+
+        // Conteúdo da mensagem
+        [Supabase.Postgrest.Attributes.Column("content")]
+        public string Content { get; set; }
+
+        // Data de envio da mensagem
+        [Supabase.Postgrest.Attributes.Column("sentat")]
+        public DateTimeOffset SentAt { get; set; }
+
+        // Data de atualização da mensagem
+        [Supabase.Postgrest.Attributes.Column("updatedat")]
+        public DateTimeOffset UpdatedAt { get; set; }
+
+        // Data de exclusão da mensagem
+        [Supabase.Postgrest.Attributes.Column("deletedat")]
+        public DateTimeOffset? DeletedAt { get; set; }
     }
 
     public class ChatConfig

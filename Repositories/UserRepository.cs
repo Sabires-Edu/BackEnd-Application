@@ -93,6 +93,13 @@ namespace Sabires_Backend_Application.Repositories
                 var totalFollowing = await client.From<Follower>().Where(follower => follower.FollowerUserId == user.UserId && follower.StatusId == 2).Count(CountType.Exact);
                 var totalFollowers = await client.From<Follower>().Where(follower => follower.FollowingUserId == user.UserId && follower.StatusId == 2).Count(CountType.Exact);
 
+                var studentResponse = await client.From<Student>().Where(student => student.UserId == user.UserId).Get();
+
+                if(string.IsNullOrWhiteSpace(studentResponse.Content))
+                    throw new InternalServerException("Estudante não encontrado.");
+
+                var student = JsonSerializer.Deserialize<List<StudentResponse>>(studentResponse.Content);
+
                 return new MeResponse
                 {
                     UserId = user.UserId,
@@ -104,6 +111,7 @@ namespace Sabires_Backend_Application.Repositories
                     StatusId = user.StatusId,
                     CreatedAt = user.CreatedAt,
                     UpdatedAt = user.UpdatedAt,
+                    BirthDate = student[0].BirthDate,
                     TotalFollowers = totalFollowers == 0 ? 0 : totalFollowers,
                     TotalFollowing = totalFollowing == 0 ? 0 : totalFollowing
                 };

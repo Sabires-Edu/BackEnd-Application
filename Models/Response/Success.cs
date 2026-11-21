@@ -67,6 +67,14 @@ namespace Sabires_Backend_Application.Models.Response
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public ChatResponse? Chat { get; set; }
 
+        // Informações dos Chats
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<ChatResponse>? Chats { get; set; }
+
+        // Informações das Mensagens
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<MessageResponse>? Messages { get; set; }
+
         // Informações de paginação
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public PaginationResponse? Pagination { get; set; }
