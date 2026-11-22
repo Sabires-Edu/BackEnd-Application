@@ -64,6 +64,22 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
+    "Method": "DeleteChat",
+    "RelativePath": "v1/chats/{chatId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chatId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
     "Method": "AddMemberToChat",
     "RelativePath": "v1/chats/{chatId}/member/{memberId}",
     "HttpMethod": "POST",

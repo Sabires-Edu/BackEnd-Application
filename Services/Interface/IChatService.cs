@@ -14,5 +14,6 @@ namespace Sabires_Backend_Application.Services.Interface
         Task AddMemberToChat(string token, Guid userid, int chatid, Guid memberid);
         Task RemoveMemberFromChat(string token, Guid userid, int chatid, Guid memberid);
         Task UpdateChat(string token, Guid userid, int chatid, UpdateChatDTO chat);
+        Task DeleteChat(string token, Guid userid, int chatid);
     }
 }

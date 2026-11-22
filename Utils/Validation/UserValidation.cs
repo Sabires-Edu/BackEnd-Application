@@ -11,8 +11,8 @@ namespace Sabires_Backend_Application.Utils.Validation
 {
     public class UserValidation
     {
-        public static readonly Regex NameRegex = new Regex(@"[a-zA-Z]");
-        public static readonly Regex EmailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+        public static readonly Regex NameRegex = new Regex(@"^[\p{L}]+$");
+        public static readonly Regex EmailRegex = new Regex(@"^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9_%+-]+(?:\.[a-zA-Z0-9_%+-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$");
         private static readonly Regex SpecialCharRegex = new Regex(@"[^\p{L}\p{Nd}_]");
         private static readonly Regex UpperCaseRegex = new Regex(@"[A-Z]");
         private static readonly Regex LowerCaseRegex = new Regex(@"[a-z]");

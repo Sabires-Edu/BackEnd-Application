@@ -57,5 +57,10 @@ namespace Sabires_Backend_Application.Services
             await _validation.CheckUpdateDTO(token, chat, chatid, userid, chatRepository);
             await chatRepository.UpdateChat(token, userid, chatid, chat);
         }
+ 
+        public async Task DeleteChat(string token, Guid userid, int chatid)
+        {
+            await chatRepository.DeleteChat(token, userid, chatid);
+        }
     }
 }

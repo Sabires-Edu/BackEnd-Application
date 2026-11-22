@@ -45,8 +45,8 @@ namespace Sabires_Backend_Application.Repositories
 
                 var chatResponse = await client.From<Chat>().Where(ct => ct.ChatId == chatid).Get();
 
-                if (string.IsNullOrWhiteSpace(chatResponse.Content))
-                    throw new InternalServerException("Não foi possível buscar os detalhes do chat. Por favor, tente novamente mais tarde.");
+                if (chatResponse.Count == 0)
+                    throw new BadRequestException("Não foi possível localizar esse chat. Por favor, tente novamente com um chat válido.");
 
                 var chatDetails = JsonSerializer.Deserialize<List<ChatResponse>>(chatResponse.Content);
 
@@ -70,9 +70,11 @@ namespace Sabires_Backend_Application.Repositories
 
                 return chat;
             }
+            catch (BadRequestException) {
+                throw;
+            }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
                 throw new InternalServerException("Não foi possível buscar os detalhes do chat. Por favor, tente novamente mais tarde.");
             }
         }
@@ -307,6 +309,32 @@ namespace Sabires_Backend_Application.Repositories
             catch (Exception e)
             {
                 throw new InternalServerException("Houve um erro ao atualizar o chat. Por favor tente novamente mais tarde.");
+            }
+        }
+    
+        public async Task DeleteChat(string token, Guid userid, int chatid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var ownerResponse = await client.From<Chat>().Where(ct => ct.OwnerId == userid && ct.ChatId == chatid).Count(CountType.Exact);
+
+                if (ownerResponse == 0)
+                    throw new BadRequestException("Você não é o dono do chat ou esse chat não existe. Por favor peça para o dono realizar a operação ou insira um chat válido.");
+
+                var response = await adminclient.From<Chat>().Where(ct => ct.ChatId == chatid).Delete();
+
+                if (string.IsNullOrWhiteSpace(response.Content))
+                    throw new InternalServerException("Houve um erro ao deletar o chat. Por favor tente novamente mais tarde.");
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Houve um erro ao deletar o chat. Por favor tente novamente mais tarde.");
             }
         }
     }

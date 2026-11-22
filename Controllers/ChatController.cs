@@ -221,5 +221,31 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+
+        [Authorize]
+        [HttpDelete("{chatId}")]
+        public async Task<IActionResult> DeleteChat([FromRoute] int chatId)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            await _chatService.DeleteChat(token, userid, chatId);
+
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Deletado o chat corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Result = $"Chat {chatId} deletado com sucesso."
+                }
+            });
+        }
     }
 }
