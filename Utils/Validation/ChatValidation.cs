@@ -24,13 +24,33 @@ namespace Sabires_Backend_Application.Utils.Validation
             if (!string.IsNullOrWhiteSpace(chat.ChatDescription) && chat.ChatDescription.Length > 400)
                 throw new BadRequestException("A descrição do chat não pode ter mais de 400 caracteres.");
 
-             if(chat.MembersId.Count > 0)
+            if (chat.MembersId.Count > 0)
             {
-                foreach(var memberid in chat.MembersId)
+                foreach (var memberid in chat.MembersId)
                 {
                     await userRepository.GetUserById(memberid, token);
                 }
             }
+        }
+
+        public async Task CheckUpdateDTO(string token, UpdateChatDTO chat, int chatid, Guid userid, IChatRepository chatRepository)
+        {
+            if (string.IsNullOrEmpty(chat.ChatName) && string.IsNullOrEmpty(chat.ChatDescription))
+                throw new BadRequestException("O nome ou descrição do chat não podem estar vazios.");
+
+            var currentChat = await chatRepository.GetChatById(token, userid, chatid, 1, 1);
+
+            if (currentChat.ChatName == chat.ChatName)
+                throw new BadRequestException("O nome atual do chat é o mesmo do nome atualizado.");
+
+            if (currentChat.ChatDescription == chat.ChatDescription)
+                throw new BadRequestException("A descrição atual do chat é a mesma da descrição atualizada.");
+
+            if (!string.IsNullOrEmpty(chat.ChatName) && chat.ChatName.Length > 200)
+                throw new BadRequestException("O nome do chat não pode ter mais de 200 caracteres.");
+
+            if (!string.IsNullOrWhiteSpace(chat.ChatDescription) && chat.ChatDescription.Length > 400)
+                throw new BadRequestException("A descrição do chat não pode ter mais de 400 caracteres.");
         }
     }
 }

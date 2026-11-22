@@ -197,29 +197,29 @@ namespace Sabires_Backend_Application.Controllers
             });
         }
 
-        //[Authorize]
-        //[HttpPatch("{chatId}")]
-        //public async Task<IActionResult> UpdateChat([FromRoute] int chatId, [FromBody] UpdateChatDTO chat)
-        //{
-        //    string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+        [Authorize]
+        [HttpPatch("{chatId}")]
+        public async Task<IActionResult> UpdateChat([FromRoute] int chatId, [FromBody] UpdateChatDTO chat)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
-        //    string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        //    if (!Guid.TryParse(useridClaim, out Guid userid))
-        //        throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
 
-        //    await _chatService.UpdateChat(token, userid, chatId, chat);
+            await _chatService.UpdateChat(token, userid, chatId, chat);
 
-        //    return StatusCode(201, new SuccessResponse
-        //    {
-        //        Success = true,
-        //        Title = "Atualizado o chat corretamente.",
-        //        Status = 201,
-        //        Response = new Response
-        //        {
-        //            Result = $"Chat {chatId} atualizado com sucesso."
-        //        }
-        //    });
-        //};
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Atualizado o chat corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Result = $"Chat {chatId} atualizado com sucesso."
+                }
+            });
+        }
     }
 }

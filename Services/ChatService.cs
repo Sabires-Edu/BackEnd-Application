@@ -52,6 +52,10 @@ namespace Sabires_Backend_Application.Services
             await chatRepository.RemoveMemberFromChat(token, userid, chatid, memberid);
         }
 
-
+        public async Task UpdateChat(string token, Guid userid, int chatid, UpdateChatDTO chat)
+        {
+            await _validation.CheckUpdateDTO(token, chat, chatid, userid, chatRepository);
+            await chatRepository.UpdateChat(token, userid, chatid, chat);
+        }
     }
 }

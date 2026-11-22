@@ -12,6 +12,7 @@ namespace Sabires_Backend_Application.Repositories.Interface
         public Task<int> GetTotalChatMessages(string token, int chatid);
         public Task<int> GetTotalChatMembers(string token, int chatid);
         public Task AddMemberToChat(string token, Guid userid, int chatid, Guid memberid);
-        public Task RemoveMemberFromChat(string token, Guid userid, int chatid, Guid memberid);     
+        public Task RemoveMemberFromChat(string token, Guid userid, int chatid, Guid memberid);         
+        public Task UpdateChat(string token, Guid userid, int chatid, UpdateChatDTO chat);
     }
 }

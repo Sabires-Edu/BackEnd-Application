@@ -4,6 +4,8 @@ using Sabires_Backend_Application.Models.Response;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services;
 using Sabires_Backend_Application.Utils.Exceptions;
+using Supabase.Gotrue;
+using Supabase.Postgrest;
 using System.Text.Json;
 using static Supabase.Postgrest.Constants;
 
@@ -262,6 +264,49 @@ namespace Sabires_Backend_Application.Repositories
             catch (Exception e)
             {
                 throw new InternalServerException("Houve um erro ao remover o membro ao chat. Por favor tente novamente mais tarde.");
+            }
+        }
+    
+        public async Task UpdateChat(string token, Guid userid, int chatid, UpdateChatDTO chat)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var ownerResponse = await client.From<Chat>().Where(ct => ct.OwnerId == userid && ct.ChatId == chatid).Count(CountType.Exact);
+
+                if (ownerResponse == 0)
+                    throw new BadRequestException("Você não é o dono do chat. Por favor peça para o dono realizar a operação");
+
+                var updateChat = new Chat
+                {
+                    ChatName = chat.ChatName,
+                    ChatDescription = chat.ChatDescription,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                };
+
+                var query = adminclient.From<Chat>().Where(ct => ct.ChatId == chatid);
+
+                if (!string.IsNullOrEmpty(chat.ChatName))
+                    query = query.Set(u => u.ChatName, chat.ChatName);
+
+                if (!string.IsNullOrEmpty(chat.ChatDescription))
+                    query = query.Set(u => u.ChatDescription, chat.ChatDescription);
+
+                query = query.Set(u => u.UpdatedAt, DateTimeOffset.UtcNow);
+
+                var response = await query.Update();
+
+                if (string.IsNullOrWhiteSpace(response.Content))
+                    throw new InternalServerException("Houve um erro ao atualizar o chat. Por favor tente novamente mais tarde.");
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Houve um erro ao atualizar o chat. Por favor tente novamente mais tarde.");
             }
         }
     }

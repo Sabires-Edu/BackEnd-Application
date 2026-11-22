@@ -43,6 +43,27 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
+    "Method": "UpdateChat",
+    "RelativePath": "v1/chats/{chatId}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chatId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "chat",
+        "Type": "Sabires_Backend_Application.Models.DTO.UpdateChatDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
     "Method": "AddMemberToChat",
     "RelativePath": "v1/chats/{chatId}/member/{memberId}",
     "HttpMethod": "POST",
