@@ -122,6 +122,27 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
+    "Method": "SendMessage",
+    "RelativePath": "v1/chats/{chatId}/message",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chatId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "message",
+        "Type": "Sabires_Backend_Application.Models.DTO.SendMessageDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
     "Method": "GetChatMessages",
     "RelativePath": "v1/chats/{chatId}/messages",
     "HttpMethod": "GET",

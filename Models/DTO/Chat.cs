@@ -13,4 +13,9 @@
         public string? ChatName { get; set; }
         public string? ChatDescription { get; set; }
     }
+
+    public class SendMessageDTO
+    {
+        public string Content { get; set; }
+    }
 }

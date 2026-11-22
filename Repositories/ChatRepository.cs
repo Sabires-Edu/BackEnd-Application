@@ -70,7 +70,8 @@ namespace Sabires_Backend_Application.Repositories
 
                 return chat;
             }
-            catch (BadRequestException) {
+            catch (BadRequestException)
+            {
                 throw;
             }
             catch (Exception e)
@@ -268,7 +269,7 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Houve um erro ao remover o membro ao chat. Por favor tente novamente mais tarde.");
             }
         }
-    
+
         public async Task UpdateChat(string token, Guid userid, int chatid, UpdateChatDTO chat)
         {
             try
@@ -311,7 +312,7 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Houve um erro ao atualizar o chat. Por favor tente novamente mais tarde.");
             }
         }
-    
+
         public async Task DeleteChat(string token, Guid userid, int chatid)
         {
             try
@@ -335,6 +336,45 @@ namespace Sabires_Backend_Application.Repositories
             catch (Exception e)
             {
                 throw new InternalServerException("Houve um erro ao deletar o chat. Por favor tente novamente mais tarde.");
+            }
+        }
+
+        public async Task<int> SendMessage(string token, Guid userid, int chatid, SendMessageDTO message)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var memberResponse = await client.From<ChatMember>().Where(mb => mb.ChatId == chatid && mb.UserId == userid).Count(CountType.Exact);
+
+                if (memberResponse == 0)
+                    throw new BadRequestException("Você não pertence à este chat. Por favor, tente mandar uma mensagem em um chat em que você faça parte.");
+
+                var newMessage = new Message
+                {
+                    UserId = userid,
+                    ChatId = chatid,
+                    Content = message.Content,
+                    SentAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                };
+
+                var response = await adminclient.From<Message>().Insert(newMessage, new Supabase.Postgrest.QueryOptions { Returning = Supabase.Postgrest.QueryOptions.ReturnType.Representation });
+
+                var messageid = JsonSerializer.Deserialize<List<MessageResponse>>(response.Content);
+
+                if (string.IsNullOrWhiteSpace(response.Content))
+                    throw new InternalServerException("Houve um erro ao inserir a mensagem. Por favor tente novamente mais tarde.");
+
+                return messageid[0].MessageId;
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Houve um erro ao inserir a mensagem. Por favor tente novamente mais tarde.");
             }
         }
     }

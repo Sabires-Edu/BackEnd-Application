@@ -247,5 +247,31 @@ namespace Sabires_Backend_Application.Controllers
                 }
             });
         }
+
+
+        [Authorize]
+        [HttpPost("{chatId}/message")]
+        public async Task<IActionResult> SendMessage([FromRoute] int chatId, [FromBody] SendMessageDTO message)
+        {
+            string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
+
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid userid))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido.");
+
+            var messageId = await _chatService.SendMessage(token, userid, chatId, message);
+
+            return StatusCode(201, new SuccessResponse
+            {
+                Success = true,
+                Title = "Mensagem enviada corretamente.",
+                Status = 201,
+                Response = new Response
+                {
+                    Result = $"Mensagem enviada com ID {messageId} para o chat {chatId}."
+                }
+            });
+        }
     }
 }

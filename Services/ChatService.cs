@@ -62,5 +62,11 @@ namespace Sabires_Backend_Application.Services
         {
             await chatRepository.DeleteChat(token, userid, chatid);
         }
+   
+        public async Task<int> SendMessage(string token, Guid userid, int chatid, SendMessageDTO message)
+        {
+            await _validation.CheckSendMessageDTO(token, message, chatid, userid, chatRepository);
+            return await chatRepository.SendMessage(token, userid, chatid, message);
+        }
     }
 }

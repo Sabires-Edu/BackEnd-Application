@@ -1,4 +1,5 @@
-﻿using Sabires_Backend_Application.Models.DTO;
+﻿using Sabires_Backend_Application.Models;
+using Sabires_Backend_Application.Models.DTO;
 using Sabires_Backend_Application.Repositories;
 using Sabires_Backend_Application.Repositories.Interface;
 using Sabires_Backend_Application.Services;
@@ -51,6 +52,17 @@ namespace Sabires_Backend_Application.Utils.Validation
 
             if (!string.IsNullOrWhiteSpace(chat.ChatDescription) && chat.ChatDescription.Length > 400)
                 throw new BadRequestException("A descrição do chat não pode ter mais de 400 caracteres.");
+        }
+    
+        public async Task CheckSendMessageDTO(string token, SendMessageDTO message, int chatid, Guid userid, IChatRepository chatRepository)
+        {
+            if (string.IsNullOrEmpty(message.Content))
+                throw new BadRequestException("O conteúdo da mensagem não pode ser nulo.");
+
+            await chatRepository.GetChatById(token, userid, chatid, 1, 1);
+
+            if (!string.IsNullOrEmpty(message.Content) && message.Content.Length > 1500)
+                throw new BadRequestException("O conteúdo da mensagem não pode ter mais de 1500 caracteres.");
         }
     }
 }
