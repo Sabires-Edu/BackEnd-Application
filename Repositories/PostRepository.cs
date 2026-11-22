@@ -27,7 +27,7 @@ namespace Sabires_Backend_Application.Repositories
                     UserId = userid,
                     Content = postCreateDTO.Content,
                     RootPostId = postCreateDTO.RootPostId ?? 0,
-                    ParentPostId = postCreateDTO.ParentPostId ?? 0,
+                    ParentPostId = postCreateDTO.ParentPostId ?? (postCreateDTO.RootPostId ?? 0),
                     LikesCount = 0,
                     CommentsCount = 0,
                     CreatedAt = DateTimeOffset.UtcNow,
@@ -43,7 +43,7 @@ namespace Sabires_Backend_Application.Repositories
 
 
 
-                if(post.ParentPostId != null)
+                if(post.ParentPostId != 0)
                 {
                     var parentPost = await GetPostById(token, post.ParentPostId);
                     var responseComment = await adminClient.From<Post>().Set(post => post.CommentsCount, parentPost.CommentsCount + 1).Where(pt => pt.PostId == parentPost.PostId).Update();
@@ -59,9 +59,10 @@ namespace Sabires_Backend_Application.Repositories
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw new InternalServerException("Não foi possível criar o novo post. Por favor, tente novamente mais tarde.");
             }
-        }
+        }22
 
         public async Task<PostResponse> GetPostById(string token, int id)
         {
