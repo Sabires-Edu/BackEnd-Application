@@ -352,7 +352,8 @@ namespace Sabires_Backend_Application.Controllers
 
         [Authorize]
         [HttpPut("me/picture")]
-        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile file)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
         {
             string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
