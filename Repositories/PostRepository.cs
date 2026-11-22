@@ -41,8 +41,6 @@ namespace Sabires_Backend_Application.Repositories
 
                 var postid = JsonSerializer.Deserialize<int>(response.Content);
 
-
-
                 if(post.ParentPostId != 0)
                 {
                     var parentPost = await GetPostById(token, post.ParentPostId);
@@ -62,7 +60,7 @@ namespace Sabires_Backend_Application.Repositories
                 Console.WriteLine(e.Message);
                 throw new InternalServerException("Não foi possível criar o novo post. Por favor, tente novamente mais tarde.");
             }
-        }22
+        }
 
         public async Task<PostResponse> GetPostById(string token, int id)
         {

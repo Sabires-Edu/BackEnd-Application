@@ -7,4 +7,10 @@
         public string? ChatDescription { get; set; }
         public List<string> MembersId { get; set; }
     }
+
+    public class UpdateChatDTO
+    {
+        public string? ChatName { get; set; }
+        public string? ChatDescription { get; set; }
+    }
 }
