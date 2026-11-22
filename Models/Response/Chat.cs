@@ -49,7 +49,8 @@ namespace Sabires_Backend_Application.Models.Response
         public UserResponse? Members { get; set; }
     }
 
-    public class ChatJoinResponse {
+    public class ChatJoinResponse
+    {
         [JsonPropertyName("chatid")]
         public int ChatId { get; set; }
 
@@ -74,7 +75,7 @@ namespace Sabires_Backend_Application.Models.Response
         [JsonPropertyName("deletedat")]
         public DateTimeOffset? DeletedAt { get; set; }
     }
-    
+
     public class MessageResponse
     {
         [JsonPropertyName("messageid")]
@@ -97,5 +98,22 @@ namespace Sabires_Backend_Application.Models.Response
 
         [JsonPropertyName("deletedat")]
         public DateTimeOffset? DeletedAt { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("publicuser")]
+        public MessageUserResponse? PublicUser { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("chat")]
+        public MessageChatResponse? Chat { get; set; }
+    }
+
+    public class MessageChatResponse
+    {
+        [JsonPropertyName("chatid")]
+        public int ChatId { get; set; }
+
+        [JsonPropertyName("chatname")]
+        public string ChatName { get; set; }
     }
 }

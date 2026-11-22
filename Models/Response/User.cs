@@ -130,4 +130,24 @@ namespace Sabires_Backend_Application.Models.Response
         [JsonPropertyName("biography")]
         public required string Biography { get; set; }
     }
+
+    public class MessageUserResponse
+    {
+        // Identificador do usuário
+        [JsonPropertyName("userid")]
+        public required Guid UserId { get; set; }
+
+        // Nome
+        [JsonPropertyName("firstname")]
+        public required string FirstName { get; set; }
+
+        // Sobrenome
+        [JsonPropertyName("lastname")]
+        public required string LastName { get; set; }
+
+        // Foto de perfil
+        [JsonPropertyName("profilepicture")]
+        public required string ProfilePicture { get; set; }
+    }
+
 }

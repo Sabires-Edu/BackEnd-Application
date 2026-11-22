@@ -68,5 +68,10 @@ namespace Sabires_Backend_Application.Services
             await _validation.CheckSendMessageDTO(token, message, chatid, userid, chatRepository);
             return await chatRepository.SendMessage(token, userid, chatid, message);
         }
+        
+        public async Task<MessageResponse> GetMessageById(string token, Guid userid, int chatid, int messageid)
+        {
+            return await chatRepository.GetMessageById(token, userid, chatid, messageid);
+        }
     }
 }

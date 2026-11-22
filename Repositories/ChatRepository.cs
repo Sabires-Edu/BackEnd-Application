@@ -377,5 +377,38 @@ namespace Sabires_Backend_Application.Repositories
                 throw new InternalServerException("Houve um erro ao inserir a mensagem. Por favor tente novamente mais tarde.");
             }
         }
+    
+        public async Task<MessageResponse> GetMessageById(string token, Guid userid, int chatid, int messageid)
+        {
+            try
+            {
+                Supabase.Client client = _client.InitCustomClient(token);
+
+                var memberResponse = await adminclient.From<ChatMember>().Where(mb => mb.ChatId == chatid && mb.UserId == userid).Count(CountType.Exact);
+
+                if (memberResponse == 0)
+                    throw new BadRequestException("Você não pertence à este chat ou ele não existe. Por favor, tente buscar uma mensagem em um chat válido.");
+
+                var response = await client.From<Message>().Where(msg => msg.ChatId == chatid && msg.MessageId == messageid).Get();
+
+                if (string.IsNullOrWhiteSpace(response.Content))
+                    throw new InternalServerException("Não foi possível buscar a mensagem. Por favor, tente novamente mais tarde.");
+
+                var messageDetails = JsonSerializer.Deserialize<List<MessageResponse>>(response.Content);
+
+                if (messageDetails.Count == 0)
+                    throw new BadRequestException("Não foi possível localizar essa mensagem. Por favor, tente novamente com uma mensagem válida.");
+
+                return messageDetails[0];
+            }
+            catch (BadRequestException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InternalServerException("Não foi possível buscar a mensagem. Por favor, tente novamente mais tarde.");
+            }
+        }
     }
 }

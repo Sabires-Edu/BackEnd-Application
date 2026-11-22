@@ -92,6 +92,14 @@ namespace Sabires_Backend_Application.Models
         // Data de exclusão da mensagem
         [Supabase.Postgrest.Attributes.Column("deletedat")]
         public DateTimeOffset? DeletedAt { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [Reference(typeof(Chat), ReferenceAttribute.JoinType.Inner)]
+        public Chat? Chats { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [Reference(typeof(PublicUser), ReferenceAttribute.JoinType.Inner)]
+        public PublicUser? Users { get; set; }
     }
 
     public class ChatConfig

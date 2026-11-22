@@ -16,5 +16,6 @@ namespace Sabires_Backend_Application.Repositories.Interface
         public Task UpdateChat(string token, Guid userid, int chatid, UpdateChatDTO chat);
         public Task DeleteChat(string token, Guid userid, int chatid);
         public Task<int> SendMessage(string token, Guid userid, int chatid, SendMessageDTO message);
+        public Task<MessageResponse> GetMessageById(string token, Guid userid, int chatid, int messageid);
     }
 }
