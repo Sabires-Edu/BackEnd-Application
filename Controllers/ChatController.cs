@@ -276,7 +276,7 @@ namespace Sabires_Backend_Application.Controllers
 
         [Authorize]
         [HttpGet("{chatId}/messages/{messageId}")]
-        public async Task<IActionResult> DeleteMessage([FromRoute] int chatId, [FromRoute] int messageId)
+        public async Task<IActionResult> GetMessageById([FromRoute] int chatId, [FromRoute] int messageId)
         {
             string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
@@ -290,7 +290,7 @@ namespace Sabires_Backend_Application.Controllers
             return StatusCode(201, new SuccessResponse
             {
                 Success = true,
-                Title = "Mensagem deletada corretamente.",
+                Title = "Mensagem obtida corretamente.",
                 Status = 201,
                 Response = new Response
                 {
