@@ -169,7 +169,7 @@
   },
   {
     "ContainingType": "Sabires_Backend_Application.Controllers.ChatController",
-    "Method": "DeleteMessage",
+    "Method": "GetMessageById",
     "RelativePath": "v1/chats/{chatId}/messages/{messageId}",
     "HttpMethod": "GET",
     "IsController": true,

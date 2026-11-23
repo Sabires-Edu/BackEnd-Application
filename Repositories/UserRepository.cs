@@ -125,7 +125,7 @@ namespace Sabires_Backend_Application.Repositories
             }
         }
 
-        public async Task<UserResponse> GetUserById(string userid, string token)
+        public async Task<UserResponse> GetUserById(string userid, string token, Guid tokenUserId)
         {
             try
             {
@@ -143,6 +143,8 @@ namespace Sabires_Backend_Application.Repositories
                 var totalFollowers = await client.From<Follower>().Where(follower => follower.FollowerUserId == user.UserId).Count(CountType.Exact);
                 var totalFollowing = await client.From<Follower>().Where(follower => follower.FollowingUserId == user.UserId).Count(CountType.Exact);
 
+                var followerStatusResponse = await client.From<Follower>().Where(follower => follower.FollowerUserId == tokenUserId && follower.FollowingUserId == user.UserId).Get();
+
                 return new UserResponse
                 {
                     UserId = user.UserId,
@@ -153,7 +155,8 @@ namespace Sabires_Backend_Application.Repositories
                     Biography = user.Biography,
                     StatusId = user.StatusId,
                     TotalFollowers = totalFollowers == 0 ? 0 : totalFollowers,
-                    TotalFollowing = totalFollowing == 0 ? 0 : totalFollowing
+                    TotalFollowing = totalFollowing == 0 ? 0 : totalFollowing,
+                    FollowerStatus = followerStatusResponse.Models.Count > 0 ? (int?)followerStatusResponse.Models[0].StatusId : 0
                 };
             }
             catch (Exception e)
@@ -194,7 +197,8 @@ namespace Sabires_Backend_Application.Repositories
                     Biography = user.Biography,
                     StatusId = user.StatusId,
                     TotalFollowers = user.Followers == 0 ? 0 : user.Followers,
-                    TotalFollowing = user.Followings == 0 ? 0 : user.Followings
+                    TotalFollowing = user.Followings == 0 ? 0 : user.Followings,
+                    FollowerStatus = user.FollowerStatusId
                 }).ToList();
             }
             catch (Exception e)
@@ -253,6 +257,7 @@ namespace Sabires_Backend_Application.Repositories
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw new InternalServerException("Não foi possível buscar os seguidores. Por favor, tente novamente mais tarde.");
             }
         }

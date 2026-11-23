@@ -78,5 +78,8 @@ namespace Sabires_Backend_Application.Models
 
         [JsonPropertyName("followings")]
         public required int Followings { get; set; }
+
+        [JsonPropertyName("followerstatusid")]
+        public int FollowerStatusId { get; set; }
     }
 }

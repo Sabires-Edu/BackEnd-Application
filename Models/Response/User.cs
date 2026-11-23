@@ -77,6 +77,10 @@ namespace Sabires_Backend_Application.Models.Response
 
         [JsonPropertyName("following")]
         public int TotalFollowing { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("followerstatusid")]
+        public int? FollowerStatus { get; set; }
     }
 
     public class StudentResponse

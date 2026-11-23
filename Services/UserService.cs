@@ -62,8 +62,8 @@ namespace Sabires_Backend_Application.Services
             return await _userRepository.Me(token);
         }
 
-        public async Task<UserResponse> GetUserById(string userid, string token) {
-            return await _userRepository.GetUserById(userid, token);
+        public async Task<UserResponse> GetUserById(string userid, string token, Guid tokenUserId) {
+            return await _userRepository.GetUserById(userid, token, tokenUserId);
         }
     
         public async Task<List<UserResponse>> GetAllUsers(int page, int limit, string token, Guid userid)
@@ -93,7 +93,7 @@ namespace Sabires_Backend_Application.Services
     
         public async Task<int> FollowUser(string token, Guid followerUserId, Guid followingUserId)
         {
-            var followerUser = await _userRepository.GetUserById(followingUserId.ToString(), token);
+            var followerUser = await _userRepository.GetUserById(followingUserId.ToString(), token, followerUserId);
 
             return await _userRepository.FollowUser(token, followerUserId, followingUserId);
         }

@@ -23,7 +23,7 @@ namespace Sabires_Backend_Application.Services
 
         public async Task<ChatResponse> CreateChat(string token, Guid userid, CreateChatDTO chat)
         {
-            await _validation.CheckDTO(token, chat, userRepository);            
+            await _validation.CheckDTO(token, chat, userRepository, userid);            
             return await chatRepository.CreateChat(token, userid, chat);
         }
     

@@ -10,7 +10,7 @@ namespace Sabires_Backend_Application.Repositories.Interface
         public Task<UserByEmailResponse> GetUserByEmail(string email);
         public Task<PrivateUserByEmailResponse> GetPrivateUserByEmailOrId(string email = "", Guid id = default(Guid));
         public Task<MeResponse> Me(string token);
-        public Task<UserResponse> GetUserById(string userid, string token);
+        public Task<UserResponse> GetUserById(string userid, string token, Guid tokenUserId);
         public Task<List<UserResponse>> GetAllUsers(int page, int limit, string token, Guid userid);
         public Task<int> GetTotalUsers(string token);
         public Task<List<UserResponse>> GetFollowers(int page, int limit, string token, Guid userid);

@@ -9,7 +9,7 @@ namespace Sabires_Backend_Application.Utils.Validation
 {
     public class ChatValidation
     {
-        public async Task CheckDTO(string token, CreateChatDTO chat, IUserRepository userRepository)
+        public async Task CheckDTO(string token, CreateChatDTO chat, IUserRepository userRepository, Guid userid)
         {
             var chatTypes = new List<int> { 1, 2 };
 
@@ -29,7 +29,7 @@ namespace Sabires_Backend_Application.Utils.Validation
             {
                 foreach (var memberid in chat.MembersId)
                 {
-                    await userRepository.GetUserById(memberid, token);
+                    await userRepository.GetUserById(memberid, token, userid);
                 }
             }
         }

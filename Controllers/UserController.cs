@@ -103,7 +103,12 @@ namespace Sabires_Backend_Application.Controllers
         {
             string token = _tokenGenerator.CheckToken(Request.Headers["Authorization"]);
 
-            var user = await _userService.GetUserById(userid, token);
+            string useridClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(useridClaim, out Guid tokenUserId))
+                throw new UnauthorizedException("O identificador do usuário é inválido. Por favor insira um usuário válido..");
+
+            var user = await _userService.GetUserById(userid, token, tokenUserId);
 
             return StatusCode(200, new SuccessResponse
             {
