@@ -173,9 +173,6 @@ namespace Sabires_Backend_Application.Utils.Validation
             if (Biography.Length < 5 || Biography.Length > 255)
                 throw new BadRequestException("A biografia deve ter entre 5 e 255 caracteres. Por favor insira um biografia com um comprimento válido.");
 
-            if (!NameRegex.IsMatch(Biography))
-                throw new BadRequestException("A biografia contém caracteres inválidos. Por favor insira apenas letras e números.");
-
             if (Biography == currentBiography)
                 throw new BadRequestException("A nova biografia não pode ser igual à biografia atual. Por favor altere para uma biografia diferente.");
         }

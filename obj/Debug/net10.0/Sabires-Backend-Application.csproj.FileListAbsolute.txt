@@ -6,7 +6,6 @@ C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/bin/Debug/ne
 C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/bin/Debug/net10.0/Sabires-Backend-Application.runtimeconfig.json
 C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/bin/Debug/net10.0/Sabires-Backend-Application.dll
 C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/bin/Debug/net10.0/Sabires-Backend-Application.pdb
-C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/bin/Debug/net10.0/Microsoft.AspNetCore.OpenApi.dll
 C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/bin/Debug/net10.0/Microsoft.OpenApi.dll
 C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/obj/Debug/net10.0/Sabires-Backend-Application.csproj.AssemblyReference.cache
 C:/Users/INTEL/Desktop/Códigos/Sabires/Sabires-Backend-Application/obj/Debug/net10.0/rpswa.dswa.cache.json
@@ -115,7 +114,6 @@ C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\ne
 C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Sabires-Backend-Application.pdb
 C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\BirdMessenger.dll
 C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
 C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
@@ -223,3 +221,8 @@ C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\Sabires-Ba
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\Sabires-Backend-Application.pdb
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\Sabires-Backend-Application.genruntimeconfig.cache
 C:\Users\andjes\Desktop\Pessoal\BackEnd-Application\obj\Debug\net10.0\ref\Sabires-Backend-Application.dll
+C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Sabires-Backend-Application.xml
+C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\INTEL\Desktop\Códigos\Sabires\Sabires-Backend-Application\obj\Debug\net10.0\Sabires-Backend-Application.xml
